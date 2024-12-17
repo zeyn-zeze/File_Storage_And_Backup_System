@@ -1,0 +1,127 @@
+/* Genel Stil */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: aliceblue;
+    background-size: cover;
+    background-position: center;
+    color: #444;
+}
+
+/* Sidebar */
+.bg-dark {
+    background-color: #343a40 !important;
+    position: fixed; /* Sidebar'ı sabit hale getirir */
+    top: 0;
+    left: 0;
+    width: 400px; /* Sidebar genişliği */
+    height: 100vh; /* Sidebar yüksekliği ekran yüksekliği kadar */
+    padding-top: 20px;
+    z-index: 1000; /* Sidebar'ın her zaman üstte olmasını sağlar */
+}
+
+.text-white {
+    color: white !important;
+}
+
+h3 {
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Profil Bilgileri */
+.card-header {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.card-body {
+    font-size: 1rem;
+    padding: 15px;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Profil Bilgileri Butonları */
+.d-flex a {
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: center;
+    padding: 12px;
+    font-size: 1rem;
+}
+
+/* Butonlar */
+.btn {
+    border-radius: 5px;
+    font-size: 1rem;
+    padding: 12px;
+    text-align: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Mobil uyum */
+@media (max-width: 768px) {
+    /* Sidebar'ın mobilde üstte görünmesini sağlamak */
+    .container-fluid {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .col-md-3, .col-md-9 {
+        padding: 10px;
+    }
+
+    .bg-dark {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .col-md-9 {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .container {
+        padding-left: 0;
+        padding-top: 0;
+    }
+}
+
+/* Ana Sayfa İçeriği */
+.container {
+    padding-left: 270px; /* Sidebar'a uygun şekilde içerik kaydırıldı */
+    padding-top: 20px;
+}
+
+.container-fluid {
+    padding-left: 270px; /* Sidebar'a uygun şekilde içerik kaydırıldı */
+}
+
+/* Dosya Yedekleme ve Senkronizasyon Kartları */
+.card-body {
+    font-size: 1rem;
+}
+
+.card-header.bg-primary {
+    background-color: #007bff;
+}
+
+.card-header.bg-secondary {
+    background-color: #6c757d;
+}
+
+/* Profil sayfası butonunun üst kısmı */
+.d-flex.justify-content-center {
+    margin-top: 30px;
+}

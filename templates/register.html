@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side: Logo -->
+        <div class="left-side">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo">
+        </div>
+
+        <!-- Right Side: Registration Form -->
+        <div class="right-side">
+            <h1>Kayıt Ol</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <p class="message {{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endwith %}
+            
+            <form action="/register" method="POST">
+                <label for="username">Kullanıcı Adı:</label>
+                <input type="text" name="username" required>
+                
+                <label for="email">E-posta:</label>
+                <input type="email" name="email" required>
+                
+                <label for="password">Şifre:</label>
+                <input type="password" name="password" required>
+                
+                <button type="submit">Kayıt Ol</button>
+            </form>
+            <p>Zaten bir hesabınız var mı? <a href="/login">Giriş Yap</a></p>
+        </div>
+    </div>
+</body>
+</html>

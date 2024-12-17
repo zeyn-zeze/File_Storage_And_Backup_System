@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dosya Depolama ve Yedekleme Sistemi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='home_base.css') }}" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 bg-dark text-white p-4" style="height: 100vh;">
+                <div class="mb-4">
+                    <p><strong>Kullanıcı Adı:</strong> {{ session['username'] }}</p>
+                    <p><strong>E-posta:</strong> {{ user.email }}</p>
+                </div>
+
+                <!-- Hoş Geldiniz Mesajı -->
+                <h5 class="text-center mb-4">Hoş Geldiniz, {{ session['username'] }}!</h5>
+
+                <div class="d-flex flex-column">
+                    <a href="" class="btn btn-primary mb-3">Dosya Yedekle</a>
+                    <a href="{{ url_for('sync_page')}}" class="btn btn-secondary mb-3">Dosya Senkronize Et</a>
+                    <a href="{{ url_for('profile') }}" class="btn btn-info mb-3">Profil Bilgileri</a>  <!-- Profil sayfası butonu -->
+                </div>
+
+                <a href="{{ url_for('logout') }}" class="btn btn-danger mt-4 w-100">Çıkış Yap</a>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-9 p-4">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

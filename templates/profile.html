@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h1 class="text-center mb-4" style="color:grey">Profil Bilgileriniz</h1>
+
+    <!-- Kişisel Bilgiler -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5>Kişisel Bilgiler</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Kullanıcı Adı:</strong> {{ session['username'] }}</p>
+        <p><strong>E-posta:</strong> {{ user.email }}</p>
+        <p><strong>Telefon:</strong> {{ user.phone or 'Bilinmiyor' }}</p>
+        <p><strong>Doğum Tarihi:</strong> {{ user.birthdate or 'Bilinmiyor' }}</p>
+      </div>
+    </div>
+
+    <!-- Bulunduğu Takımlar -->
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white">
+        <h5>Bulunduğu Takımlar</h5>
+      </div>
+      <div class="card-body">
+        <ul>
+          {% for team in user.teams %}
+            <li>{{ team.name }}</li>
+          {% endfor %}
+          {% if not user.teams %}
+            <li>Hiçbir takıma katılmadınız.</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+  
+
+    <!-- Profil Bilgileri Düzenle -->
+    <div class="d-flex justify-content-center">
+      <a href="" class="btn btn-warning">Profil Bilgilerini Düzenle</a>
+    </div>
+  </div>
+{% endblock %}

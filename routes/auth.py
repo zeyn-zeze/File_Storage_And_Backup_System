@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.User import User, db
-from flask_login import login_user  # login_user fonksiyonunu import edin
+
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
@@ -22,8 +22,6 @@ def register():
             return redirect(url_for('auth.login'))
     return render_template('register.html')
 
-
-
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -31,12 +29,11 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
-            login_user(user)  # Kullanıcıyı oturum açmış olarak işaretle
+            session['username'] = username
             flash('Giriş başarılı!', 'success')
             return redirect(url_for('main.home'))
         flash('Kullanıcı adı veya şifre hatalı!', 'danger')
     return render_template('login.html')
-
 
 @auth_bp.route('/logout')
 def logout():

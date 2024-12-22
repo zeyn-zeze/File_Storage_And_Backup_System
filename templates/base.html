@@ -23,11 +23,11 @@
 
                 <div class="d-flex flex-column">
                     <a href="" class="btn btn-primary mb-3">Dosya Yedekle</a>
-                    <a href="{{ url_for('sync_page')}}" class="btn btn-secondary mb-3">Dosya Senkronize Et</a>
-                    <a href="{{ url_for('profile') }}" class="btn btn-info mb-3">Profil Bilgileri</a>  <!-- Profil sayfası butonu -->
+                    <a href="" class="btn btn-secondary mb-3">Dosya Senkronize Et</a>
+                    <a href="{{ url_for('main.profile') }}" class="btn btn-info mb-3">Profil Bilgileri</a>  <!-- Profil sayfası butonu -->
                 </div>
 
-                <a href="{{ url_for('logout') }}" class="btn btn-danger mt-4 w-100">Çıkış Yap</a>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mt-4 w-100">Çıkış Yap</a>
             </div>
 
             <!-- Main Content Area -->

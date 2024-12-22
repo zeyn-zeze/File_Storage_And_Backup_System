@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Dosya Yükle</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('sync.upload_file') }}" method="POST" enctype="multipart/form-data">
+                        <!-- Dosya Seçim Alanı -->
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Dosya Seçin</label>
+                            <input type="file" class="form-control" id="file" name="file" required>
+                        </div>
+
+                        <!-- Yükle Butonu -->
+                        <button type="submit" class="btn btn-primary w-100">Dosyayı Yükle</button>
+                    </form>
+
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert alert-info mt-3">
+                            <ul>
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

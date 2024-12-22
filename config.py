@@ -1,7 +1,8 @@
 class Config:
     SECRET_KEY = 'yedek'
+    SESSION_COOKIE_NAME = 'session' 
     # Veritabanı bağlantı dizesini güncelledim ve özel karakterler için URL encode kullandım.
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:password@localhost/flaskdb'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Zeynep5703?@localhost/flaskdb'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Dosya yükleme ayarları

@@ -16,19 +16,22 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Yedekleme işlemi
-def backup_file(filename):
+@sync_bp.route('/backup')
+@login_required
+def backup_files():
     upload_folder = app.config['UPLOAD_FOLDER']
     backup_folder = os.path.join(upload_folder, 'backup')
-    
-    # Yedekleme klasörü yoksa oluşturuluyor
-    if not os.path.exists(backup_folder):
-        os.makedirs(backup_folder)
 
-    file_path = os.path.join(upload_folder, filename)
-    backup_path = os.path.join(backup_folder, filename)
+    if not os.path.exists(backup_folder):
+        flash('Backup folder not found.', 'danger')
+        return redirect(url_for('sync.upload_file'))
+
+    files = os.listdir(backup_folder)
+    files = [file for file in files if allowed_file(file)]  # İzin verilen dosyalar
     
-    shutil.copy(file_path, backup_path)
+    # Şablona dosyalar gönderiliyor
+    return render_template('backup.html', files=files)
+
 
 @sync_bp.route('/upload', methods=['GET', 'POST'])
 @login_required  # Bu decorator, oturum açmamış kullanıcıları login sayfasına yönlendirecektir

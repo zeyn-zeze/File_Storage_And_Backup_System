@@ -22,8 +22,10 @@
                 <h5 class="text-center mb-4">Hoş Geldiniz, {{ g.user.username if g.user else 'Misafir' }}!</h5>
 
                 <div class="d-flex flex-column">
-                    <a href="{{ url_for('sync.upload_file') }}" class="btn btn-primary mb-3">Dosya Yedekle</a>
+                    <a href="{{ url_for('sync.backup_files') }}" class="btn btn-info mb-3">Yedeklenen Dosyalar</a>
+                    <a href="{{ url_for('sync.upload_file') }}" class="btn btn-info mb-3">Dosya Yedekle</a>
                     <a href="{{ url_for('main.profile') }}" class="btn btn-info mb-3">Profil Bilgileri</a>  <!-- Profil sayfası butonu -->
+                    
                 </div>
 
                 <a href="{{ url_for('auth.logout') }}" class="btn btn-danger mt-4 w-100">Çıkış Yap</a>

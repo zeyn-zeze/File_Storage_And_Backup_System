@@ -1,34 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="container">
-    <h2 class="text-center mb-4">Dosya Yedekleme</h2>
-
-    <div class="card mb-4">
-      <div class="card-header bg-primary text-white">
-        <h5>Yedekleme İşlemi</h5>
-      </div>
-      <div class="card-body">
-        <p>Yedekleme yapmak için aşağıdaki butona tıklayın. Yedekleme işlemi tamamlandığında, sonuçlar log dosyasına kaydedilecektir.</p>
-        <!-- Yedekleme butonu -->
-        <form action="{{ url_for('start_backup') }}" method="POST">
-          <button type="submit" class="btn btn-primary w-100">Yedeklemeyi Başlat</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- İlerleme durumu ve log gösterimi -->
-    <div class="card mb-4">
-      <div class="card-header bg-success text-white">
-        <h5>İlerleme Durumu</h5>
-      </div>
-      <div class="card-body">
-        <!-- Bu kısım, yedekleme işlemi sırasında dinamik olarak güncellenmeli -->
-        <div class="progress">
-          <div class="progress-bar" style="width: 0%;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Yedeklenen Dosyalar</h4>
+                </div>
+                <div class="card-body">
+                    {% if files %}
+                        <ul class="list-group">
+                            {% for file in files %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center" style="color:black">
+                                    {{ file }}  <!-- Dosya adını burada gösteriyoruz -->
+                                    <div>
+                                        <a href="{{ url_for('sync.download_file', filename=file) }}" class="btn btn-success btn-sm ms-2">İndir</a>
+                                        <a href="{{ url_for('sync.delete_file', filename=file) }}" class="btn btn-danger btn-sm ms-2">Sil</a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Henüz yedeklenmiş dosya yok.</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <p class="mt-3" id="backup-status">Yedekleme işlemi başlamadı.</p>
-      </div>
     </div>
-  </div>
+</div>
 {% endblock %}

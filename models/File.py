@@ -1,6 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
+from models import db
 
-db = SQLAlchemy()
 
 class File(db.Model):
     __tablename__ = 'files'  # Make sure this matches the table name in the database

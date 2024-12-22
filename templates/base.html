@@ -13,10 +13,7 @@
         <div class="row">
             <!-- Sidebar -->
             <div class="col-md-3 bg-dark text-white p-4" style="height: 100vh;">
-                <div class="mb-4">
-                    <p><strong>Kullanıcı Adı:</strong> {{ g.user.username if g.user else 'Misafir' }}</p>
-                    <p><strong>E-posta:</strong> {{ g.user.email if g.user else 'Bilgi yok' }}</p>
-                </div>
+
 
                 <!-- Hoş Geldiniz Mesajı -->
                 <h5 class="text-center mb-4">Hoş Geldiniz, {{ g.user.username if g.user else 'Misafir' }}!</h5>
@@ -25,6 +22,7 @@
                     <a href="{{ url_for('sync.backup_files') }}" class="btn btn-info mb-3">Yedeklenen Dosyalar</a>
                     <a href="{{ url_for('sync.upload_file') }}" class="btn btn-info mb-3">Dosya Yedekle</a>
                     <a href="{{ url_for('main.profile') }}" class="btn btn-info mb-3">Profil Bilgileri</a>  <!-- Profil sayfası butonu -->
+                    <a href="" class="btn btn-info mb-3">Gönderi Oluştur</a>
                     
                 </div>
 

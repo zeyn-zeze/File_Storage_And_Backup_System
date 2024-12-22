@@ -13,10 +13,12 @@
                         <ul class="list-group">
                             {% for file in files %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center" style="color:black">
-                                    {{ file }}  <!-- Dosya adını burada gösteriyoruz -->
+                                    {{ file.filename}}  <!-- Dosya adını burada gösteriyoruz -->
                                     <div>
-                                        <a href="{{ url_for('sync.download_file', filename=file) }}" class="btn btn-success btn-sm ms-2">İndir</a>
-                                        <a href="{{ url_for('sync.delete_file', filename=file) }}" class="btn btn-danger btn-sm ms-2">Sil</a>
+                                        <a href="{{ url_for('sync.open_file', file_id=file.id) }}" class="btn btn-success btn-sm ms-2">Aç</a>
+                                        <a href="{{ url_for('sync.delete_file', file_id=file.id) }}" class="btn btn-danger btn-sm ms-2">Sil</a>
+
+                                        
                                     </div>
                                 </li>
                             {% endfor %}

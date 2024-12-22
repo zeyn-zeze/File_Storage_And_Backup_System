@@ -61,25 +61,23 @@ def upload_file():
 @login_required
 def open_file(file_id):
     # Veritabanından dosya kaydını al
-    file_record = File.query.filter_by(file_id=file_id, owner_id=current_user.user_id).first()
+    file_record = File.query.filter_by(id=file_id, owner_id=current_user.user_id).first()
     
     if file_record:
-        # Veritabanından dosya yolunu al
-        file_path = file_record.file_path  # file_path: 'uploads/klasör/dosya_adı.pdf'
+        # Dosya yolunu al
+        file_path = file_record.filepath  # Assuming 'filepath' stores the absolute path
         
-        # Dosya tam yolunu al
-        full_file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_path)
-        
-        # Dosya mevcutsa
-        if os.path.exists(full_file_path):
+        # Dosyanın mevcut olup olmadığını kontrol et
+        if os.path.exists(file_path):
             # Dosyayı tarayıcıda açmak için gönder
-            return send_file(full_file_path, as_attachment=False)  # Dosyayı tarayıcıda açar
+            return send_file(file_path, as_attachment=False)  # Dosyayı tarayıcıda açar
         else:
-            flash('File not found', 'danger')
+            flash('File not found on the server', 'danger')
             return redirect(url_for('sync.upload_file'))
     else:
         flash('File not found in database', 'danger')
-        return redirect(url_for('sync.upload_file'))
+        return redirect(url_for('sync.backup_files'))
+
 
 
 @sync_bp.route('/delete/<file_id>', methods=['GET'])

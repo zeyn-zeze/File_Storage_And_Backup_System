@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .container {
+        margin-top: 50px;
+        background-color: #f9f9f9;
+        padding: 30px;
+        border-radius: 8px;
+        max-width: 1000px;  /* Decrease max-width for a more compact layout */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    h2 {
+        color: #5a4d41;  /* Change to a more neutral color */
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-align: center;  /* Center the title */
+    }
+
+    h3 {
+        color: #333;
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #d3b8ae;  /* Nude color for the underline */
+        padding-bottom: 5px;
+        margin-top: 30px;
+    }
+
+    .section-header {
+        background-color: #d3b8ae;  /* Soft nude background for section headers */
+        color: white;
+        border-radius: 5px;
+        width: 80%;  /* Ensure it matches the table width */
+        margin-left: auto;  /* Align to the center */
+        margin-right: auto;  /* Center the section header */
+        text-align: center;
+        padding: 10px 20px;
+    }
+
+    .table {
+        width: 80%;  /* Reduce table width to 80% */
+        margin-bottom: 20px;
+        border-collapse: collapse;
+        margin-left: auto;  /* Align to the center */
+        margin-right: auto;  /* Center the table */
+        table-layout: fixed;  /* Ensures that the table columns have a fixed layout */
+    }
+
+    .table th, .table td {
+        padding: 12px;  /* Reduced padding for smaller size */
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #d3b8ae;  /* Soft nude background for headers */
+        color: white;
+        font-weight: bold;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #f8f4f0;  /* Light nude color for even rows */
+    }
+
+    .table tr:hover {
+        background-color: #e0d3c6;  /* Slight hover effect */
+    }
+
+    .table td {
+        color: #555;
+    }
+
+    .table-bordered {
+        border: 2px solid #d3b8ae;  /* Border color matching header */
+    }
+
+    .table td, .table th {
+        text-align: left;
+    }
+
+    .table td a {
+        text-decoration: none;
+        color: #d3b8ae;  /* Soft nude color for links */
+    }
+
+    .table td a:hover {
+        color: #333;
+    }
+
+    .info-table {
+        background-color: #ffffff;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-table td {
+        font-size: 1.1em;
+        padding: 10px;
+    }
+
+    .info-table th {
+        background-color: #d3b8ae;  /* Soft nude background for headers */
+        color: white;
+        font-size: 1.1em;
+    }
+
+    .info-table .info-row {
+        font-size: 1.1em;
+        color: #666;
+    }
+</style>
+
+<div class="container">
+    <h2 class="text-center mb-4">{{ team.name }} - Bilgiler</h2>
+
+    <div class="section-header">
+        <h3>Kurucu:</h3>
+    </div>
+    <table class="table info-table">
+        <tr class="info-row">
+            <th>Username</th>
+            <td>{{ owner.username }}</td>
+        </tr>
+        <tr class="info-row">
+            <th>Email</th>
+            <td>{{ owner.email }}</td>
+        </tr>
+    </table>
+
+    <div class="section-header">
+        <h3>Üyeler:</h3>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user, member in members %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ member.role }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

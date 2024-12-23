@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Yeni Gönderi Oluştur - {{ team.name }}</h2>
+    
+    <form method="POST">
+        <div class="mb-3">
+            <label for="content" class="form-label">Gönderi İçeriği</label>
+            <textarea class="form-control" id="content" name="content" rows="5"></textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="file_id" class="form-label">Dosya Ekle (isteğe bağlı)</label>
+            <select class="form-control" id="file_id" name="file_id">
+                <option value="">Dosya Seçin</option>
+                {% for file in files %}
+                    <option value="{{ file.id }}">{{ file.filename }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Gönderiyi Oluştur</button>
+    </form>
+</div>
+{% endblock %}

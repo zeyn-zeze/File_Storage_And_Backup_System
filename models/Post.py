@@ -8,7 +8,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     content = db.Column(db.Text, nullable=True)
     file_id = db.Column(db.Integer, db.ForeignKey('files.id'))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
     team = db.relationship('Team', back_populates='posts')
     user = db.relationship('User')

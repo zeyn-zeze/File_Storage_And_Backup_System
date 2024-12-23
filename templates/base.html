@@ -19,10 +19,11 @@
                 <h5 class="text-center mb-4">Hoş Geldiniz, {{ g.user.username if g.user else 'Misafir' }}!</h5>
 
                 <div class="d-flex flex-column">
+                    <a href="" class="btn btn-info mb-3">Bildirimler</a>
                     <a href="{{ url_for('sync.backup_files') }}" class="btn btn-info mb-3">Yedeklenen Dosyalar</a>
                     <a href="{{ url_for('sync.upload_file') }}" class="btn btn-info mb-3">Dosya Yedekle</a>
                     <a href="{{ url_for('main.profile') }}" class="btn btn-info mb-3">Profil Bilgileri</a>  <!-- Profil sayfası butonu -->
-                    <a href="" class="btn btn-info mb-3">Gönderi Oluştur</a>
+                    <a href="{{ url_for('team.list_teams') }}" class="btn btn-info mb-3">Takımlar</a>
                     
                 </div>
 

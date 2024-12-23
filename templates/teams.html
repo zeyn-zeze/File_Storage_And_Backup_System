@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Takımlarım</h1>
+    <div class="text-center mb-4">
+        <a href="{{ url_for('team.create_team') }}" 
+           class="btn btn-primary d-flex justify-content-center align-items-center" 
+           style="width: 100px; height: 100px; border-radius: 8px; font-size: 36px; font-weight: bold; margin: 0 auto;">
+           +
+        </a>
+        <p class="mt-2">Yeni Takım Oluştur</p>
+    </div>
+
+    <div class="row justify-content-center">
+        {% for team in teams %}
+            <div class="col-md-4 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ team.name }}</h5>
+                        <a href="{{ url_for('team.team_page', team_id=team.id) }}" class="btn btn-info">Takım Sayfası</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

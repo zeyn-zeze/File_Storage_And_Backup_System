@@ -10,19 +10,34 @@
         <h5>Kişisel Bilgiler</h5>
       </div>
       <div class="card-body">
-        <p><strong>Kullanıcı Adı:</strong> {{ session['username'] }}</p>
+        {% if not is_editing %}
+        <!-- Görüntüleme Modu (düz yazı) -->
+        <p><strong>Kullanıcı Adı:</strong> {{ user.username }}</p>
         <p><strong>E-posta:</strong> {{ user.email }}</p>
-        <p><strong>Şifre:</strong> {{ user.password or 'Bilinmiyor' }}</p>
+        
+        <div class="d-flex justify-content-center mt-4">
+          <a href="{{ url_for('main.edit_profile') }}" class="btn btn-warning">Profil Bilgilerini Düzenle</a>
+        </div>
+        {% else %}
+        <!-- Düzenleme Modu (input alanları) -->
+        <form method="POST" action="{{ url_for('main.profile') }}">
+          <div class="form-group">
+            <label for="username"><strong>Kullanıcı Adı:</strong></label>
+            <input type="text" id="username" name="username" class="form-control" value="{{ user.username }}" required>
+          </div>
 
+          <div class="form-group">
+            <label for="email"><strong>E-posta:</strong></label>
+            <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}" required>
+          </div>
+
+          <div class="d-flex justify-content-center mt-4">
+            <button type="submit" class="btn btn-success">Profil Bilgilerini Güncelle</button>
+            <a href="{{ url_for('main.profile') }}" class="btn btn-danger ml-2">Vazgeç</a>
+          </div>
+        </form>
+        {% endif %}
       </div>
-    </div>
-
-
-  
-
-    <!-- Profil Bilgileri Düzenle -->
-    <div class="d-flex justify-content-center">
-      <a href="" class="btn btn-warning">Profil Bilgilerini Düzenle</a>
     </div>
   </div>
 {% endblock %}

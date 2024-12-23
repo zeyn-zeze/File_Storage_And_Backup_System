@@ -9,9 +9,19 @@ class User(db.Model, UserMixin):  # UserMixin burada ekleniyor
     password = db.Column(db.String(60), nullable=False)
 
     def set_password(self, password):
+        
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password):
+        
         return bcrypt.check_password_hash(self.password, password)
+    
+    
+    def generate_pass(self, password):
+        # Ensure you are generating the password hash correctly
+        if password:
+            return bcrypt.generate_password_hash(password)
+        return None  # This should never happen if the password is valid
+    
     def get_id(self):
         return str(self.user_id) 

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash, g
+from flask_login import current_user, login_required
 from models.User import User
-from functools import wraps
+
 
 # Blueprint oluşturma
 main_bp = Blueprint('main', __name__)
@@ -13,15 +14,7 @@ def load_user():
     else:
         g.user = None
 
-# Giriş yapmamış kullanıcıları yönlendirmek için dekoratör
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if g.user is None:
-            flash('Lütfen giriş yapınız!', 'warning')
-            return redirect(url_for('auth.login'))
-        return f(*args, **kwargs)
-    return decorated_function
+
 
 # Anasayfa yönlendirmesi
 @main_bp.route('/')

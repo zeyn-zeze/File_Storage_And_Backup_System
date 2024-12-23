@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask_login import login_user
 from models.User import User, db
 
 auth_bp = Blueprint('auth', __name__)
@@ -29,9 +30,9 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
-            session['username'] = username
+            login_user(user)  # Kullanıcıyı oturum açmış olarak işaretle
             flash('Giriş başarılı!', 'success')
-            return redirect(url_for('main.home'))
+            return redirect(url_for('main.home'))  # Ana sayfaya yönlendirin
         flash('Kullanıcı adı veya şifre hatalı!', 'danger')
     return render_template('login.html')
 

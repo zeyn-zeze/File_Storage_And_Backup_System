@@ -16,7 +16,8 @@
 
 
                 <!-- Hoş Geldiniz Mesajı -->
-                <h5 class="text-center mb-4">Hoş Geldiniz, {{ g.user.username if g.user else 'Misafir' }}!</h5>
+                <h5 class="text-center mb-4">Hoş Geldiniz, {{ current_user.username if current_user.is_authenticated else 'Misafir' }}!</h5>
+
 
                 <div class="d-flex flex-column">
                     <a href="" class="btn btn-info mb-3">Bildirimler</a>

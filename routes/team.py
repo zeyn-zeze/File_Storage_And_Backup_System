@@ -13,7 +13,7 @@ from models.User import User
 team_bp = Blueprint('team', __name__)
 
 UPLOAD_FOLDER = 'uploads/'
-ALLOWED_EXTENSIONS = {'pdf', 'jpg', 'jpeg', 'png', 'txt', 'csv'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','docx'}
 
 def allowed_file(filename):
     """Check if file extension is allowed."""
@@ -220,7 +220,7 @@ def create_post(team_id):
     files = File.query.filter_by(owner_id=current_user.user_id).all()
     return render_template('gonderi.html', team=team, files=files)
 
-@team_bp.route('/open/<int:post_id>', methods=['GET'])
+@team_bp.route('/teams/open/<int:post_id>', methods=['GET'])
 @login_required
 def open_post(post_id):
     # Fetch the post based on the given post_id

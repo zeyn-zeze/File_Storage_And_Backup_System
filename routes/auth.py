@@ -28,12 +28,17 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        
         user = User.query.filter_by(username=username).first()
-        if user and user.check_password(password):
-            login_user(user)  # Kullanıcıyı oturum açmış olarak işaretle
+        
+        if user and user.check_password(password):  # Kullanıcıyı ve şifreyi doğruluyoruz
+            session['username'] = user.username  # Giriş başarılıysa oturumu başlatıyoruz
             flash('Giriş başarılı!', 'success')
-            return redirect(url_for('main.home'))  # Ana sayfaya yönlendirin
+            return redirect(url_for('main.home'))  # Giriş başarılıysa ana sayfaya yönlendir
+            
         flash('Kullanıcı adı veya şifre hatalı!', 'danger')
+        return render_template('login.html')
+
     return render_template('login.html')
 
 @auth_bp.route('/logout')

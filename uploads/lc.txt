@@ -1,0 +1,50 @@
+using BookFixx.database;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.UI.WebControls;
+
+namespace BookFixx.api.Controllers
+{
+    [RoutePrefix("api")]
+    
+    public class LoginApiController : ApiController
+    {
+        private readonly DataBaseLayer _db;
+
+        // Default constructor
+        public LoginApiController()
+        {
+            _db = new DataBaseLayer();
+        }
+
+        // Constructor for DI (if you decide to use DI later)
+        public LoginApiController(DataBaseLayer db)
+        {
+            _db = db;
+        }
+
+
+        [HttpPost]
+        [Route("login")]
+        public HttpResponseMessage Login([FromBody] User user)
+        {
+            if (user == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Kullanıcı bilgileri eksik.");
+            }
+
+            var info = _db.Users.FirstOrDefault(x => x.Username == user.Username && x.Password == user.Password);
+            if (info != null)
+            {
+                // Here you can set up a basic session or token; 
+                // for now, just returning a success message and redirect URL
+                var redirectUrl = info.Role == "admin" ? "/Admin/Index" : "/Home/Index";
+                return Request.CreateResponse(HttpStatusCode.OK, new { RedirectUrl = redirectUrl });
+            }
+
+            return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Geçersiz kullanıcı adı veya şifre.");
+        }
+    }
+}

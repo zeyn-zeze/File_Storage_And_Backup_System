@@ -1,9 +1,9 @@
-import datetime
+from datetime import datetime
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from flask_login import current_user, login_required
-from models.PasswordResetRequest import PasswordResetRequest
+from models.PasswordChangeRequest import PasswordChangeRequest
 from models.User import User
-from models import db
+from models import db,bcrypt
 
 # Blueprint oluşturma
 main_bp = Blueprint('main', __name__)
@@ -51,6 +51,7 @@ def edit_profile():
     return redirect(url_for('main.profile', edit=True))  # Düzenleme moduna geçiş için 'edit' parametresi ekleniyor
 
 # Şifre değiştirme işlemi
+
 @main_bp.route('/change_password', methods=['POST'])
 @login_required
 def change_password():
@@ -58,27 +59,33 @@ def change_password():
     new_password = request.form['new_password']
     confirm_password = request.form['confirm_password']
 
-    # Eski şifreyi doğrulama
-    if not current_user.check_password(current_password):  # Şifre doğrulama
+    # Check if the current password matches
+    if not bcrypt.check_password_hash(current_user.password, current_password):
         flash('Eski şifreyi yanlış girdiniz.', 'danger')
         return redirect(url_for('main.profile'))
 
-    # Yeni şifrelerin eşleşip eşleşmediğini kontrol et
+    # Ensure new passwords match
     if new_password != confirm_password:
         flash('Yeni şifreler uyuşmuyor!', 'danger')
         return redirect(url_for('main.profile'))
 
-    # Şifre değişikliği isteği oluştur
-    password_request = PasswordResetRequest(
-        user_id=current_user.id,
+    # Hash the new password before storing it
+    hashed_new_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+
+    # Create password change request
+    password_request = PasswordChangeRequest(
+        user_id=current_user.user_id,
         requested_at=datetime.now(),
-        status='pending'
+        status='pending',
+        new_password=hashed_new_password  # Store the hashed new password
     )
     db.session.add(password_request)
     db.session.commit()
 
     flash('Şifre değişikliği talebiniz iletildi. Yönetici onayı bekleniyor.', 'info')
     return redirect(url_for('main.profile'))
+
+
 
 
 

@@ -55,6 +55,19 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+
+        {% if current_user.password_change_requests %}
+        {% for request in current_user.password_change_requests %}
+            {% if request.status == 'approved' %}
+                <p>Şifre değişikliği talebiniz onaylandı.</p>
+            {% elif request.status == 'rejected' %}
+                <p>Şifre değişikliği talebiniz reddedildi.</p>
+            {% elif request.status == 'pending' %}
+                <p>Şifre değişikliği talebiniz beklemede.</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %} 
+    
         <div class="modal-body">
           <form method="POST" action="{{ url_for('main.change_password') }}">
             <div class="form-group">

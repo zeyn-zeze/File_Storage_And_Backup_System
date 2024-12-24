@@ -1,27 +1,28 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from models.File import File
+from models.Notification import Notification
 from models.TeamMember import TeamMember
 from models.User import User
 from models.Team import Team
-from models.PasswordResetRequest import PasswordResetRequest
+from models.PasswordChangeRequest import PasswordChangeRequest
 from models import  db,bcrypt
 
 admin_bp = Blueprint('admin', __name__)
+
 from flask_login import current_user, login_required
 
 @admin_bp.route('/admin/dashboard')
 def dashboard():
     if current_user.is_authenticated:
         if current_user.role == 'admin':
-            # Veri gönder
-            password_requests = PasswordResetRequest.query.filter_by(status='pending').all()
+            password_requests = PasswordChangeRequest.query.filter_by(status='pending').all()
             logs = []  # Log verisi ekleyin
             anomaly_logs = []  # Anomali logları ekleyin
-            
-            return render_template('admin_dashboard.html', 
-                                   password_requests=password_requests, 
-                                   logs=logs, 
+
+            return render_template('admin_dashboard.html',
+                                   password_requests=password_requests,
+                                   logs=logs,
                                    anomaly_logs=anomaly_logs)  # Verilerle birlikte şablonu render edin
         else:
             flash('Yetkiniz yok!', 'danger')
@@ -128,58 +129,55 @@ def delete_team():
 
 
 
-@admin_bp.route('/admin/set_storage_limit', methods=['GET', 'POST'])
-@login_required
-def set_storage_limit():
-    if current_user.role != 'admin':
-        flash("Bu işlemi yapmaya yetkiniz yok.", "danger")
-        return redirect(url_for('auth.admin_login'))
-
-    # Logic for updating storage limit (similar to the one in user_info)
-    if request.method == 'POST':
-        user_id = request.form.get('user_id')
-        new_limit = request.form.get('storage_limit')
-        user = User.query.get(user_id)
-        if user:
-            user.storage_limit = new_limit
-            db.session.commit()
-            flash("Depolama limiti başarıyla güncellendi.", "success")
-        else:
-            flash("Kullanıcı bulunamadı.", "danger")
-        
-    return redirect(url_for('admin.user_info', user_id=user_id))
-
-
-#Şifre Değişim istekleri yönetimi
-
 
 @admin_bp.route('/admin/password_requests', methods=['GET', 'POST'])
 @login_required
 def manage_password_requests():
     if current_user.role != 'admin':
         flash("Bu işlemi yapmaya yetkiniz yok.", "danger")
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('admin.dashboard'))
 
-    # Bekleyen talepleri çek
-    requests = PasswordResetRequest.query.filter_by(status='pending').all()
+    requests = PasswordChangeRequest.query.filter_by(status='pending').all()
+    enriched_requests = []
+    for req in requests:
+        user = User.query.get(req.user_id)
+        enriched_requests.append({
+            'request': req,
+            'user': user
+        })
 
     if request.method == 'POST':
         request_id = request.form.get('request_id')
-        new_password = request.form.get('new_password')
-        reset_request = PasswordResetRequest.query.get(request_id)
+        reset_request = PasswordChangeRequest.query.get(request_id)
 
         if reset_request:
+            action = request.form.get('action')
             user = User.query.get(reset_request.user_id)
+
             if user:
-                # Yeni şifreyi hash'le ve kaydet
-                user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
-                reset_request.status = 'approved'
-                db.session.commit()
-                flash(f"{user.username} kullanıcısının şifresi başarıyla değiştirildi.", "success")
+                if action == 'approve':
+                    # Şifre değişim talebini onayla
+                    reset_request.status = 'approved'
+
+                    # Update the user's password with the hashed new password
+                    user.password = reset_request.new_password  # Use the hashed password
+                    db.session.commit()
+                    flash(f"{user.username} kullanıcısının şifre değişiklik isteği onaylandı.", "success")
+                elif action == 'reject':
+                    reset_request.status = 'rejected'
+                    db.session.commit()
+                    flash(f"{user.username} kullanıcısının şifre değişiklik isteği reddedildi.", "danger")
             else:
                 flash("Kullanıcı bulunamadı.", "danger")
         else:
             flash("Talep bulunamadı.", "danger")
 
-    return render_template('password_requests.html', requests=requests)
+    return redirect(url_for('admin.dashboard'))
+
+
+
+
+
+
+
 

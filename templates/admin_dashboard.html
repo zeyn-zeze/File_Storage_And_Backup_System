@@ -11,7 +11,7 @@
             <thead>
                 <tr>
                     <th>Talep ID</th>
-                    <th>Kullanıcı ID</th>
+                    <th>Kullanıcı Adı</th>
                     <th>Durum</th>
                     <th>İşlem</th>
                 </tr>
@@ -20,13 +20,14 @@
                 {% for request in password_requests %}
                     <tr>
                         <td>{{ request.id }}</td>
-                        <td>{{ request.user_id }}</td>
+                        <td>{{ request.user.username }}</td>
                         <td>{{ request.status }}</td>
                         <td>
                             <form method="POST" action="{{ url_for('admin.manage_password_requests') }}">
                                 <input type="hidden" name="request_id" value="{{ request.id }}">
-                                <input type="password" name="new_password" placeholder="Yeni Şifre" required>
-                                <button type="submit">Onayla</button>
+                                <button type="submit" name="action" value="approve" class="btn btn-success">Onayla</button>
+                                <button type="submit" name="action" value="reject" class="btn btn-danger">Reddet</button>
+                                
                             </form>
                         </td>
                     </tr>
@@ -81,6 +82,4 @@
         </table>
     </div>
 </div>
-
-
 {% endblock %}

@@ -223,3 +223,14 @@ input[type="text"] {
 #storage_value {
     margin-left: 10px;
 }
+.status-approved {
+    color: green;
+}
+
+.status-rejected {
+    color: red;
+}
+
+.status-pending {
+    color: orange;
+}

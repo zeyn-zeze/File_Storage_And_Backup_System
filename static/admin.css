@@ -195,3 +195,31 @@ input[type="text"] {
     margin-right: 10px;
     border: 1px solid #ccc;
 }
+
+/* Green and red status circle */
+.status-circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.status-circle.active {
+    background-color: green;
+}
+
+.status-circle.inactive {
+    background-color: red;
+}
+
+/* Style for the range slider */
+#storage_limit {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Adjust display of storage value */
+#storage_value {
+    margin-left: 10px;
+}

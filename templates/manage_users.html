@@ -11,17 +11,26 @@
                 <th>Email</th>
                 <th>Rol</th>
                 <th>Aktif</th>
+                <th>Detay İşlemler</th>
                 <th>İşlem</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
             <tr id="user-row-{{ user.user_id }}">
-                <!-- Varsayılan Durum: Bilgiler Görüntüleniyor -->
-                <td class="user-info" id="username-{{ user.user_id }}">{{ user.username }}</td>
-                <td class="user-info" id="email-{{ user.user_id }}">{{ user.email }}</td>
-                <td class="user-info" id="role-{{ user.user_id }}">{{ user.role }}</td>
-                <td class="user-info" id="active-{{ user.user_id }}">{{ 'Evet' if user.active else 'Hayır' }}</td>
+                
+                    <td class="user-info">{{ user.username }}</td>
+                    <td class="user-info">{{ user.email }}</td>
+                    <td class="user-info">{{ user.role }}</td>
+                    <td class="user-info">{{ 'Evet' if user.active else 'Hayır' }}</td>
+                    <td>
+                        <!-- Kullanıcı bilgilerini detaylı görmek için yönlendirme -->
+                        <a href="{{ url_for('admin.user_info', user_id=user.user_id) }}">
+                            <button type="button">Detaylar</button>
+                        </a>
+                       
+                    </td>
+            
                 
                 <td>
                     <!-- Güncelleme Formu -->

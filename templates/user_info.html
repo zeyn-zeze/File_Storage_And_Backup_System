@@ -1,0 +1,92 @@
+{% extends 'admin_sidebar.html' %}
+
+{% block content %}
+<div class="content">
+    <h1>Kullanıcı Detayları - {{ user.username }}</h1>
+
+    <!-- Two-column layout for user information -->
+    <div class="user-info">
+        <div class="left-column">
+            <h3>Kullanıcı Bilgileri</h3>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="username">Kullanıcı Adı:<span  id="username">  {{ user.username }} </span></label>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:<span  id="email">  {{ user.email }} </span></label>
+                </div>
+                <div class="form-group">
+                    <label for="password">Şifre: <span  id="password">  {{ user.password }} </span></label>
+                </div>
+            </form>
+        </div>
+        
+        <div class="right-column">
+            <h3>Sistem Bilgileri</h3>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="active">Aktif:</label>
+                    {% if user.active %}
+                        <span class="status-circle active"></span> <!-- Green circle for active -->
+                    {% else %}
+                        <span class="status-circle inactive"></span> <!-- Red circle for inactive -->
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="role">Rol:<span  id="role">  {{ user.role }} </span></label>
+                </div>
+                <div class="form-group">
+                    <label for="storage_limit">Depolama Limiti (MB):</label>
+                    <input type="range" name="storage_limit" id="storage_limit" min="2048" max="10024" step="1" value="{{ user.storage_limit }}">
+                    <span id="storage_value">{{ user.storage_limit }} MB</span>
+                </div>
+                <button type="submit">Güncelle</button>
+            </form>
+            
+        </div>
+    </div>
+
+    <hr>
+
+    <h3>Takımlar</h3>
+    <ul>
+        {% for team in teams %}
+            <li>
+                {{ team.team.name }} - Rol: {{ team.role }}
+                <form method="POST" action="{{ url_for('admin.delete_team', team_id=team.team.id, user_id=user.user_id) }}" style="display: inline;">
+                    <button type="submit" style="color: red;">Sil</button>
+                </form>
+            </li>
+        {% else %}
+            <li>Bu kullanıcı herhangi bir takıma bağlı değil.</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+
+    <h3>Yedeklenmiş Dosyalar</h3>
+    <ul>
+        {% for file in backup_files %}
+            <li>
+                {{ file.name }} ({{ file.date_added }})
+                <form method="POST" action="{{ url_for('admin.delete_backup_file', file_id=file.id, user_id=user.user_id) }}" style="display: inline;">
+                    <button type="submit" style="color: red;">Sil</button>
+                </form>
+            </li>
+        {% else %}
+            <li>Bu kullanıcının yedeklenmiş dosyası yok.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+  
+        // Update the storage limit display when the slider is changed
+        document.getElementById("storage_limit").addEventListener("input", function() {
+            document.getElementById("storage_value").textContent = this.value + " MB";
+        });
+    
+    
+</script>
+
+{% endblock %}

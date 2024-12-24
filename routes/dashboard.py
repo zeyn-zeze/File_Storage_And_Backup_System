@@ -1,6 +1,9 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
+from models.File import File
+from models.TeamMember import TeamMember
 from models.User import User
+from models.Team import Team
 from models.PasswordResetRequest import PasswordResetRequest
 from models import  db,bcrypt
 
@@ -78,19 +81,64 @@ def delete_user():
     return redirect(url_for('admin.manage_users'))
 
 
-# depolama limiti yönetimi 
 
-@admin_bp.route('/storage_limit', methods=['GET', 'POST'])
+@admin_bp.route('/admin/user_info/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def user_info(user_id):
+    if current_user.role != 'admin':
+        flash("Bu işlemi yapmaya yetkiniz yok.", "danger")
+        return redirect(url_for('auth.admin_login'))  # Redirect if not an admin
+
+    user = User.query.get_or_404(user_id)
+
+    if request.method == 'POST':
+        # Capture the new storage limit from the form
+        new_storage_limit = request.form.get('storage_limit')
+        # Update the user's storage limit
+        user.storage_limit = new_storage_limit
+        db.session.commit()
+        flash('Depolama limiti başarıyla güncellendi.', 'success')
+
+        # Redirect back to the user info page
+        return redirect(url_for('admin.user_info', user_id=user.user_id))  # Or the appropriate route
+
+    # Fetch teams and backup files
+    teams = TeamMember.query.filter_by(user_id=user_id).all()
+    backup_files = File.query.filter_by(owner_id=user_id).all()
+
+    return render_template('user_info.html', user=user, teams=teams, backup_files=backup_files)
+
+
+
+
+
+
+
+@admin_bp.route('/admin/delete_team', methods=['POST'])
+def delete_team():
+    team_id = request.form.get('team_id')
+    user_id = request.form.get('user_id')
+    team = Team.query.get(team_id)
+    if team:
+        # Takımı ve ilişkili üyeyi silebilirsiniz
+        db.session.delete(team)
+        db.session.commit()
+    return redirect(url_for('admin.user_info', user_id=user_id))
+
+
+
+
+@admin_bp.route('/admin/set_storage_limit', methods=['GET', 'POST'])
 @login_required
 def set_storage_limit():
-    if not current_user.role == 'admin':
+    if current_user.role != 'admin':
         flash("Bu işlemi yapmaya yetkiniz yok.", "danger")
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('auth.admin_login'))
 
+    # Logic for updating storage limit (similar to the one in user_info)
     if request.method == 'POST':
         user_id = request.form.get('user_id')
         new_limit = request.form.get('storage_limit')
-
         user = User.query.get(user_id)
         if user:
             user.storage_limit = new_limit
@@ -98,9 +146,8 @@ def set_storage_limit():
             flash("Depolama limiti başarıyla güncellendi.", "success")
         else:
             flash("Kullanıcı bulunamadı.", "danger")
-
-    users = User.query.all()
-    return render_template('storage_limit.html', users=users)
+        
+    return redirect(url_for('admin.user_info', user_id=user_id))
 
 
 #Şifre Değişim istekleri yönetimi

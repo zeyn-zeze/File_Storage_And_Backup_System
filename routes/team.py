@@ -23,7 +23,10 @@ def allowed_file(filename):
 @team_bp.route('/teams', methods=['GET'])
 @login_required
 def list_teams():
-    teams = Team.query.filter_by(owner_id=current_user.user_id).all()
+    # Query teams where the current user is a member (either as owner or team member)
+    teams = db.session.query(Team).join(TeamMember).filter(
+        (TeamMember.user_id == current_user.user_id)
+    ).all()
     return render_template('teams.html', teams=teams)
 
 # Create a new team
@@ -76,7 +79,6 @@ def create_team():
     users = User.query.filter(User.user_id != current_user.user_id).all()
     return render_template('create_team.html', users=users)
 
-# Team page displaying posts and files
 @team_bp.route('/teams/<int:team_id>', methods=['GET', 'POST'])
 @login_required
 def team_page(team_id):
@@ -107,14 +109,15 @@ def team_page(team_id):
                            files=files,
                            team_members=team_members)
 
-# Delete a team
+                         
+
 @team_bp.route('/delete_team/<int:team_id>', methods=['POST'])
 @login_required
 def delete_team(team_id):
     team = Team.query.get_or_404(team_id)
     admin = TeamMember.query.filter_by(team_id=team_id, user_id=current_user.user_id, role='team_manager').first()
 
-    if not admin:
+    if not admin or current_user.role == 'team_manager':
         flash('Bu işlemi yapmak için yetkiniz yok.', 'danger')
         return redirect(url_for('team.team_page', team_id=team_id))
 
@@ -182,6 +185,7 @@ def delete_post(post_id):
     return redirect(url_for('team.team_page', team_id=post.team_id))
 
 
+
 # Create a new post for a team
 @team_bp.route('/teams/<int:team_id>/create_post', methods=['GET', 'POST'])
 @login_required
@@ -223,30 +227,36 @@ def create_post(team_id):
 @team_bp.route('/teams/open/<int:post_id>', methods=['GET'])
 @login_required
 def open_post(post_id):
-    # Fetch the post based on the given post_id
-    post = Post.query.get(post_id)
+    # Postu ve dosyasını getir
+    post = Post.query.get_or_404(post_id)
+
+    # Gönderinin ait olduğu takımı bul
+    team = Team.query.get_or_404(post.team_id)
+
+    # Kullanıcı bu takımın bir üyesi mi diye kontrol et
+    team_member = TeamMember.query.filter_by(team_id=team.id, user_id=current_user.user_id).first()
     
-    if post and post.user_id == current_user.user_id:  # Check if the post exists and belongs to the current user
-        # Get the associated file
-        file_record = post.file
-        
-        if file_record:
-            file_path = file_record.filepath  # Get the file path from the 'file' record
-            
-            # Check if the file exists in the system
-            if os.path.exists(file_path):
-                # Serve the file in the browser
-                return send_file(file_path, as_attachment=False)  # Opens the file in the browser
-            else:
-                flash('File not found on the server', 'danger')
-                return redirect(url_for('team.team_page', team_id=post.team_id))  # Redirect back to the team page
+    if not team_member:
+        flash('Bu takıma ait değilsiniz!', 'danger')
+        return redirect(url_for('team.team_page', team_id=team.id))
+
+    # Eğer postun bir dosyası varsa, dosyayı aç
+    if post.file_id:
+        file_record = File.query.get_or_404(post.file_id)
+        file_path = file_record.filepath  # Dosyanın dosya yolu
+
+        if os.path.exists(file_path):
+            # Dosyayı tarayıcıda aç (indirilen dosya yerine)
+            return send_file(file_path, as_attachment=False)
         else:
-            flash('No file associated with this post', 'danger')
-            return redirect(url_for('team.team_page', team_id=post.team_id))  # Redirect back to the team page
-    else:
-        flash('Post not found or you do not have permission to access this post', 'danger')
-        return redirect(url_for('team.team_page')) 
-    
+            flash('Dosya sunucuda bulunamadı', 'danger')
+            return redirect(url_for('team.team_page', team_id=post.team_id))
+
+    flash('Bu gönderiye ait dosya yok', 'danger')
+    return redirect(url_for('team.team_page', team_id=post.team_id))
+
+
+
 
 
 @team_bp.route('/team/<int:team_id>/info')

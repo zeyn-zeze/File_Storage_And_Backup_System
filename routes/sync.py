@@ -3,39 +3,40 @@ import shutil
 from flask_login import current_user, login_required
 from flask import Blueprint, render_template, request, redirect, send_file, url_for, flash, current_app as app
 from werkzeug.utils import secure_filename
-from flask import send_from_directory
-from models import db  # Veritabanı modeline erişim
-from models.File import File  # File modelini import ettik
 from datetime import datetime
 
+from models.File import File
+from models import db 
+
+# Blueprint tanımı
 sync_bp = Blueprint('sync', __name__)
 
 # İzin verilen dosya uzantıları
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','docx'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+
+# Yedekleme sayfası
 @sync_bp.route('/backup')
 @login_required
 def backup_files():
-  
-    # İzin verilen dosyalar
     files = File.query.filter_by(owner_id=current_user.user_id).all()
-    # Şablona dosyalar gönderiliyor
     return render_template('backup.html', files=files)
 
-
+# Dosya yükleme
 @sync_bp.route('/upload', methods=['GET', 'POST'])
-@login_required  # Bu decorator, oturum açmamış kullanıcıları login sayfasına yönlendirecektir
+@login_required
 def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
-            flash('No file part')
+            flash('No file part', 'danger')
             return redirect(request.url)
         file = request.files['file']
         if file.filename == '':
-            flash('No selected file')
+            flash('No selected file', 'danger')
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -44,7 +45,7 @@ def upload_file():
 
             # Dosya veritabanına kaydediliyor
             new_file = File(
-                owner_id=current_user.user_id,  # Giriş yapan kullanıcının ID'si
+                owner_id=current_user.user_id,
                 filename=filename,
                 filepath=file_path,
                 created_at=datetime.now()
@@ -53,51 +54,42 @@ def upload_file():
             db.session.commit()
 
 
-            flash('File successfully uploaded and backed up')
+
+            flash('File successfully uploaded and backed up', 'success')
             return redirect(url_for('sync.upload_file'))
     return render_template('upload.html')
 
-@sync_bp.route('/open/<file_id>', methods=['GET'])
+# Dosya açma
+@sync_bp.route('/open/<int:file_id>', methods=['GET'])
 @login_required
 def open_file(file_id):
-    # Veritabanından dosya kaydını al
     file_record = File.query.filter_by(id=file_id, owner_id=current_user.user_id).first()
-    
     if file_record:
-        # Dosya yolunu al
-        file_path = file_record.filepath  # Assuming 'filepath' stores the absolute path
-        
-        # Dosyanın mevcut olup olmadığını kontrol et
+        file_path = file_record.filepath
         if os.path.exists(file_path):
-            # Dosyayı tarayıcıda açmak için gönder
-            return send_file(file_path, as_attachment=False)  # Dosyayı tarayıcıda açar
+            return send_file(file_path, as_attachment=False)
         else:
             flash('File not found on the server', 'danger')
+        
             return redirect(url_for('sync.upload_file'))
     else:
         flash('File not found in database', 'danger')
+     
         return redirect(url_for('sync.backup_files'))
 
-
-
-@sync_bp.route('/delete/<file_id>', methods=['GET'])
+# Dosya silme
+@sync_bp.route('/delete/<int:file_id>', methods=['GET'])
 @login_required
 def delete_file(file_id):
     try:
-        # Veritabanında dosyanın kaydını buluyoruz
         file_record = File.query.filter_by(id=file_id, owner_id=current_user.user_id).first()
-        
         if file_record:
-            # Dosya yolunu belirliyoruz
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_record.filename)
-            
-            # Dosyanın varlığını kontrol et ve sil
             if os.path.exists(file_path):
                 os.remove(file_path)
             else:
                 flash(f'Dosya bulunamadı: {file_path}', 'danger')
 
-            # Yedek dosyayı silme işlemi
             backup_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'backup')
             backup_path = os.path.join(backup_folder, file_record.filename)
             if os.path.exists(backup_path):
@@ -105,19 +97,34 @@ def delete_file(file_id):
             else:
                 flash(f'Yedek dosya bulunamadı: {backup_path}', 'danger')
 
-            # Veritabanındaki dosya kaydını siliyoruz
             db.session.delete(file_record)
             db.session.commit()
 
-            flash('File successfully deleted')
+          
+
+            flash('File successfully deleted', 'success')
         else:
-            flash('File not found or you are not authorized to delete this file', 'danger')
+            flash('File not found or unauthorized', 'danger')
+
     except Exception as e:
         flash(f'Error deleting file: {str(e)}', 'danger')
-    
-    # Dosya silindikten sonra yükleme sayfasına yönlendiriyoruz
+
     return redirect(url_for('sync.backup_files'))
 
+# Yedekleme işlemi (otomatik yedekleme modülü)
+@sync_bp.route('/auto_backup', methods=['POST'])
+@login_required
+def auto_backup():
+    backup_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'backup')
+    os.makedirs(backup_folder, exist_ok=True)
 
+    user_files = File.query.filter_by(owner_id=current_user.user_id).all()
+    for file_record in user_files:
+        source_path = file_record.filepath
+        backup_path = os.path.join(backup_folder, file_record.filename)
+        if not os.path.exists(backup_path) or os.path.getmtime(source_path) > os.path.getmtime(backup_path):
+            shutil.copy2(source_path, backup_path)
+         
 
-
+    flash('All files successfully backed up', 'success')
+    return redirect(url_for('sync.backup_files'))

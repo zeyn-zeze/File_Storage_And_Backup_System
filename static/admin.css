@@ -1,0 +1,197 @@
+/* Genel Stil Ayarları */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7fb; /* Açık gri arka plan */
+}
+
+/* Sidebar Tasarımı */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    background: linear-gradient(135deg, #6a1b9a, #4b0082); /* Parlak mor ve lacivert geçiş */
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px 0;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease-in-out;
+}
+
+.sidebar:hover {
+    width: 280px; /* Sidebar üzerine gelindiğinde genişlemesi */
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin: 20px 0;
+}
+
+.sidebar-menu li a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    display: block;
+    font-size: 18px;
+    border-radius: 5px;
+    transition: background-color 0.3s, padding-left 0.3s;
+}
+
+.sidebar-menu li a:hover {
+    background-color: #8e24aa; /* Mor rengin parlak tonu */
+    padding-left: 30px; /* Sidebar menüsü üzerinde hover olduğunda daha geniş */
+}
+
+.sidebar-menu li a.active {
+    background-color: #8e24aa;
+    padding-left: 30px;
+}
+
+/* Content Alanı */
+.content {
+    margin-left: 250px; /* Sidebar genişliği */
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.content h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Dashboard Section Başlıkları */
+.dashboard-section {
+    margin-bottom: 40px;
+}
+
+.dashboard-section h2 {
+    font-size: 28px;
+    color: #6a1b9a;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* Tablolar */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: left;
+    font-size: 16px;
+}
+
+th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+td {
+    color: #555;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+tr:nth-child(even):hover {
+    background-color: #f0f0f0;
+}
+
+/* Form Elemanları */
+input[type="password"], input[type="text"], button {
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
+input[type="password"]:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #8e24aa;
+}
+
+button {
+    background-color: #8e24aa;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #6a1b9a;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .content {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 100%;
+        position: relative;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button[name="action"][value="delete"] {
+    background-color: red;
+}
+
+button[name="action"][value="delete"]:hover {
+    background-color: darkred;
+}
+
+input[type="text"] {
+    padding: 5px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+}

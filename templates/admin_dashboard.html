@@ -1,0 +1,86 @@
+{% extends 'admin_sidebar.html' %}
+
+{% block content %}
+<div class="content">
+    <h1>Admin Dashboard</h1>
+
+    <!-- Şifre Talepleri -->
+    <div class="dashboard-section">
+        <h2>Şifre Talepleri</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Talep ID</th>
+                    <th>Kullanıcı ID</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in password_requests %}
+                    <tr>
+                        <td>{{ request.id }}</td>
+                        <td>{{ request.user_id }}</td>
+                        <td>{{ request.status }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin.manage_password_requests') }}">
+                                <input type="hidden" name="request_id" value="{{ request.id }}">
+                                <input type="password" name="new_password" placeholder="Yeni Şifre" required>
+                                <button type="submit">Onayla</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Loglar -->
+    <div class="dashboard-section">
+        <h2>Loglar</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Log ID</th>
+                    <th>Zaman Damgası</th>
+                    <th>Mesaj</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td>{{ log.log_id }}</td>
+                        <td>{{ log.timestamp }}</td>
+                        <td>{{ log.message }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Anomali Loglar -->
+    <div class="dashboard-section">
+        <h2>Anomali Loglar</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Log ID</th>
+                    <th>Zaman Damgası</th>
+                    <th>Mesaj</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in anomaly_logs %}
+                    <tr style="color: red;">
+                        <td>{{ log.log_id }}</td>
+                        <td>{{ log.timestamp }}</td>
+                        <td>{{ log.message }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}

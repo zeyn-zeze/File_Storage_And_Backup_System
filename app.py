@@ -9,6 +9,7 @@ from routes.auth import auth_bp
 from routes.main import main_bp
 from routes.sync import sync_bp
 from routes.team import team_bp
+from routes.dashboard import admin_bp
 login_manager = LoginManager()
 
 @login_manager.user_loader
@@ -29,6 +30,7 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(sync_bp)
     app.register_blueprint(team_bp)
+    app.register_blueprint(admin_bp)
     
     login_manager.login_view = 'auth.login'
 

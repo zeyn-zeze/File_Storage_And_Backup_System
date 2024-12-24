@@ -1,0 +1,29 @@
+<!-- templates/admin_sidebar.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <!-- Admin CSS dosyasını bağla -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>Admin Panel</h2>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('admin.manage_users') }}">Kullanıcı Yönetimi</a></li>
+        <li><a href="{{ url_for('admin.set_storage_limit') }}">Depolama Yönetimi</a></li>
+        <li><a href="{{ url_for('admin.manage_password_requests') }}">Şifre Talepleri</a></li>
+        <li><a href="{{ url_for('auth.logout') }}">Çıkış Yap</a></li>
+    </ul>
+</div>
+
+{% block content %}{% endblock %}
+
+</body>
+</html>

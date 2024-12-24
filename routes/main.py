@@ -1,5 +1,7 @@
+import datetime
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from flask_login import current_user, login_required
+from models.PasswordResetRequest import PasswordResetRequest
 from models.User import User
 from models import db
 
@@ -13,16 +15,11 @@ def home_redirect():
         return redirect(url_for('main.home'))
     return redirect(url_for('auth.login'))
 
-# Anasayfa
 @main_bp.route('/home')
 @login_required
 def home():
-    if 'username' not in session:  # session üzerinden kullanıcıyı kontrol et
-        flash('Kullanıcı bulunamadı!', 'danger')
-        return redirect(url_for('auth.login'))
+    return render_template('home.html', user=current_user)
 
-    user = User.query.filter_by(username=session['username']).first()  # Kullanıcıyı session'dan al
-    return render_template('home.html', user=user)
 
 # Profil sayfası
 @main_bp.route('/profile', methods=['GET', 'POST'])
@@ -62,26 +59,26 @@ def change_password():
     confirm_password = request.form['confirm_password']
 
     # Eski şifreyi doğrulama
-    if not current_user.check_password(current_password):  # Kullanıcı nesnesi üzerinden şifre kontrolü yapıyoruz
+    if not current_user.check_password(current_password):  # Şifre doğrulama
         flash('Eski şifreyi yanlış girdiniz.', 'danger')
         return redirect(url_for('main.profile'))
 
-    # Yeni şifreler eşleşiyor mu?
+    # Yeni şifrelerin eşleşip eşleşmediğini kontrol et
     if new_password != confirm_password:
         flash('Yeni şifreler uyuşmuyor!', 'danger')
         return redirect(url_for('main.profile'))
 
-    # Yeni şifreyi hash'leyip kaydetme
-    hashed_password = current_user.generate_pass(new_password)  # Şifreyi set_password fonksiyonu ile hash'leyip alıyoruz
+    # Şifre değişikliği isteği oluştur
+    password_request = PasswordResetRequest(
+        user_id=current_user.id,
+        requested_at=datetime.now(),
+        status='pending'
+    )
+    db.session.add(password_request)
+    db.session.commit()
 
-    # Eğer şifre hash'lenmişse, güncelleme işlemini yap
-    if hashed_password:
-        current_user.password = hashed_password
-        db.session.commit()
-        flash('Şifreniz başarıyla değiştirildi!', 'success')
-    else:
-        flash('Şifre güncellenirken bir hata oluştu!', 'danger')
-
+    flash('Şifre değişikliği talebiniz iletildi. Yönetici onayı bekleniyor.', 'info')
     return redirect(url_for('main.profile'))
+
 
 

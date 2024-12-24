@@ -1,0 +1,70 @@
+{% extends 'admin_sidebar.html' %}
+
+{% block content %}
+<div class="content">
+    <h1>Kullanıcı Yönetimi</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Kullanıcı Adı</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Aktif</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr id="user-row-{{ user.user_id }}">
+                <!-- Varsayılan Durum: Bilgiler Görüntüleniyor -->
+                <td class="user-info" id="username-{{ user.user_id }}">{{ user.username }}</td>
+                <td class="user-info" id="email-{{ user.user_id }}">{{ user.email }}</td>
+                <td class="user-info" id="role-{{ user.user_id }}">{{ user.role }}</td>
+                <td class="user-info" id="active-{{ user.user_id }}">{{ 'Evet' if user.active else 'Hayır' }}</td>
+                
+                <td>
+                    <!-- Güncelleme Formu -->
+                    <form method="POST" action="{{ url_for('admin.update_user') }}" id="update-form-{{ user.user_id }}" style="display: none;">
+                        <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                        <input type="text" name="username" id="input-username-{{ user.user_id }}" value="{{ user.username }}" required placeholder="Yeni kullanıcı adı">
+                        <input type="email" name="email" id="input-email-{{ user.user_id }}" value="{{ user.email }}" required placeholder="Yeni email">
+                        <input type="text" name="role" id="input-role-{{ user.user_id }}" value="{{ user.role }}" required placeholder="Yeni rol">
+                        <button type="submit">Güncelle</button>
+                    </form>
+
+
+                    <!-- Güncelle Butonu -->
+                    <button type="button" id="update-button-{{ user.user_id }}" onclick="showUpdateForm({{ user.user_id }})">Güncelle</button>
+
+
+                    <!-- Silme Formu -->
+                    <form method="POST" action="{{ url_for('admin.delete_user') }}" style="display: inline;">
+                        <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                        <button type="submit" name="action" value="delete" style="color: red;">Sil</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function showUpdateForm(userId) {
+        // Kullanıcı bilgilerini metin kutuları ile değiştir
+        document.getElementById('username-' + userId).style.display = 'none';
+        document.getElementById('email-' + userId).style.display = 'none';
+        document.getElementById('role-' + userId).style.display = 'none';
+        document.getElementById('active-' + userId).style.display = 'none'; // Hide active column
+    
+        // Güncelleme formunu göster
+        document.getElementById('update-form-' + userId).style.display = 'block';
+    
+        // Güncelleme butonunu gizle
+        document.getElementById('update-button-' + userId).style.display = 'none';
+    }
+    
+</script>
+
+{% endblock %}

@@ -22,16 +22,19 @@ def calculate_total_size(files):
 
 def backup_file(file_record):
     """Dosya yedekleme işlemi."""
+    # Yedekleme klasörünü belirle
     backup_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'backup', file_record.folder.name)
     os.makedirs(backup_folder, exist_ok=True)
+
+    # Yeni dosya adıyla yedek dosya yolu
     backup_path = os.path.join(backup_folder, file_record.filename)
 
+    # Eğer yedek dosyası yoksa ya da eski dosya daha yeni ise, yedekle
     if not os.path.exists(backup_path) or os.path.getmtime(file_record.filepath) > os.path.getmtime(backup_path):
         shutil.copy2(file_record.filepath, backup_path)
         flash(f'Dosya "{file_record.filename}" başarıyla yedeklendi.', 'success')
     else:
         flash(f'Dosya "{file_record.filename}" zaten güncel.', 'info')
-
 @folder_bp.route('/upload/<int:folder_id>', methods=['GET', 'POST'])
 @login_required
 def upload_file(folder_id):
@@ -92,35 +95,44 @@ def upload_file(folder_id):
 
     return render_template('folder_details.html', folder=folder, files=folder.files, total_size=total_size, storage_limit=storage_limit)
 
-
-@folder_bp.route('/rename_file/<int:file_id>', methods=['GET', 'POST'])
+@folder_bp.route('/rename_file/<int:file_id>', methods=['POST'])
 @login_required
 def rename_file(file_id):
-    file = File.query.get_or_404(file_id)
+    file = File.query.get(file_id)  # Veritabanından dosyayı al
+    if file:
+        new_name = request.form['new_name']  # Yeni dosya adını al
+        new_name = secure_filename(new_name)  # Yeni dosya adını güvenli hale getir
 
-    if request.method == 'POST':
-        new_name = secure_filename(request.form['new_name'])
-        if not new_name:
-            flash('Geçersiz dosya adı!', 'danger')
-            return redirect(url_for('folder.rename_file', file_id=file_id))
+        # Klasör yolunu al
+        folder = Folder.query.get(file.folder_id)
+        folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder.name)
 
-        # Dosya adını güncelleme
-        old_path = file.filepath
-        new_path = os.path.join(os.path.dirname(file.filepath), new_name)
+        # Eski ve yeni dosya yolunu oluştur
+        old_file_path = os.path.join(folder_path, file.filename)
+        new_file_path = os.path.join(folder_path, new_name)
 
         try:
-            os.rename(old_path, new_path)
+            # Dosya adını değiştirme işlemi
+            os.rename(old_file_path, new_file_path)
+
+            # Veritabanındaki dosya adını güncelle
             file.filename = new_name
-            file.filepath = new_path
-            db.session.commit()
-            flash('Dosya adı başarıyla değiştirildi.', 'success')
+            file.filepath = new_file_path  # Dosyanın yeni yolunu güncelle
+            db.session.commit()  # Veritabanına kaydet
+
+            # Yeni dosya adıyla yedekleme işlemini gerçekleştir
+            backup_file(file)
+
+            flash('Dosya adı başarıyla değiştirildi!', 'success')
+            return redirect(request.referrer)  # Aynı sayfaya geri döndür
+
         except Exception as e:
-            db.session.rollback()
             flash(f"Dosya adı değiştirilirken bir hata oluştu: {e}", 'danger')
+            return redirect(request.referrer)
 
-        return redirect(url_for('folder.folder_details', folder_id=file.folder_id))
-
-    return render_template('rename_file.html', file=file)
+    else:
+        flash('Dosya bulunamadı.', 'danger')
+        return redirect(request.referrer)
 
 @folder_bp.route('/delete_file/<int:file_id>', methods=['GET'])
 @login_required
@@ -129,7 +141,7 @@ def delete_file(file_id):
     folder_id = file.folder_id
 
     try:
-        os.remove(file.filepath)  # Fiziksel dosyayı sil
+        os.remove(file.filepath)  # Remove the physical file
         db.session.delete(file)
         db.session.commit()
         flash('Dosya başarıyla silindi.', 'success')
@@ -222,16 +234,17 @@ def move_file(file_id):
     file = File.query.get_or_404(file_id)
     
     if request.method == 'POST':
-        new_folder_id = request.form.get('new_folder_id')  # Yeni klasör ID'si alınır
+        new_folder_id = request.form.get('new_folder_id')  # New folder ID
         new_folder = Folder.query.get_or_404(new_folder_id)
         
-        # Dosyayı taşıma işlemi (veritabanındaki klasör ilişkisini güncelle)
+        # Update the file's folder association
         file.folder_id = new_folder.id
         db.session.commit()
         
         flash('Dosya başarıyla taşındı!', 'success')
         return redirect(url_for('folder.folder_details', folder_id=new_folder.id))
     
-    # Kullanıcının sahip olduğu tüm klasörleri al
+    # Get all folders owned by the user
     folders = Folder.query.filter_by(owner_id=current_user.user_id).all()
     return render_template('move_file.html', file=file, folders=folders)
+

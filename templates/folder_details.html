@@ -46,14 +46,14 @@
             <button type="submit" class="btn btn-primary mt-2" {% if (total_size / (1024 * 1024)) >= storage_limit %}disabled{% endif %}>Dosya Yükle</button>
         </form>
         {% with messages = get_flashed_messages(with_categories=true) %}
-     {% if messages %}
+    {% if messages %}
         <ul>
             {% for category, message in messages %}
                 <li class="alert alert-{{ category }}">{{ message }}</li>
             {% endfor %}
         </ul>
     {% endif %}
-   {% endwith %}
+{% endwith %}
 
         {% for file in files %}
         <div class="col-md-4 mb-4"> <!-- 3 sütun için her bir dosya için 4 birimlik alan -->
@@ -63,7 +63,7 @@
                     <img src="{{ url_for('static', filename='img/klasör.jpg') }}" class="card-img-top mb-3" alt="dosya Resmi" style="width: 100%; max-width: 150px; height: auto;">
                     
                     <!-- Dosya adı ve boyutu alt kısımda -->
-                    <p class="text-center"><span>{{ file.filename }}</span></p>
+                    <p class="text-center" class="contain"><span>{{ file.filename }}</span></p>
                     <p class="text-center"><span class="badge bg-secondary">{{ (file.size / (1024 * 1024)) | round(2) }} MB</span></p> <!-- Dosya boyutu MB cinsinden -->
                 </div>
 
@@ -73,17 +73,40 @@
                         ...
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="{{ url_for('folder.rename_file', file_id=file.id) }}">Yeniden Adlandır</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameModal{{ file.id }}">Yeniden Adlandır</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('folder.delete_file', file_id=file.id) }}">Sil</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('folder.download_file', file_id=file.id) }}">İndir</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('folder.move_file', file_id=file.id) }}">Taşı</a></li>
                     </ul>
+                    
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="renameModal{{ file.id }}" tabindex="-1" aria-labelledby="renameModalLabel{{ file.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="renameModalLabel{{ file.id }}">Dosya Adını Değiştir</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('folder.rename_file', file_id=file.id) }}" method="POST">
+                            <div class="mb-3">
+                                <label for="new_name{{ file.id }}" class="form-label">Yeni Dosya Adı</label>
+                                <input type="text" class="form-control" id="new_name{{ file.id }}" name="new_name" value="{{ file.filename }}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
 
 <script>
     // Dosya seçildiğinde dosya ismini ve simgesini göster
@@ -92,5 +115,7 @@
         document.getElementById('uploadedFile').style.display = 'block';
         document.getElementById('uploadedFileName').textContent = fileName;
     });
+
+    
 </script>
 {% endblock %}

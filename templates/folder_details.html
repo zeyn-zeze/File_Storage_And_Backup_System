@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h4>{{ folder.name }} Klasörü</h4>
+    <p><strong>Toplam Boyut:</strong> {{ (total_size / (1024 * 1024)) | round(2) }} MB</p> <!-- Klasörün toplam boyutu MB cinsinden -->
+
+    <!-- Kullanıcı alanının ilerleme çubuğu -->
+    <div class="mb-4">
+        <strong>Kullanılan Alan</strong>
+        <div class="progress" style="height: 25px;">
+            {% set total_space = 6144 %} <!-- 6144 MB toplam alan -->
+            {% set used_space = total_size / (1024 * 1024) %} <!-- MB cinsine çevir -->
+            {% set progress_percentage = (used_space / total_space) * 100 %}
+            <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%; background-color: green;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>{{ used_space | round(2) }} MB</span> <!-- Kullanılan alan MB cinsinden -->
+            <span>{{ total_space }} MB</span> <!-- Toplam alan MB cinsinden -->
+        </div>
+    </div>
+
+    <!-- Storage Limit Warning -->
+    {% if total_size / (1024 * 1024) > storage_limit %}
+    <div class="alert alert-danger" role="alert">
+        Uyarı: Toplam depolama alanınız sınıra yaklaşmakta veya aşıyor. Dosya yüklemeniz engellenebilir.
+    </div>
+    {% endif %}
+
+    <!-- Dosyalar için Grid sistemi (3'e bölünmüş) -->
+    <div class="row">
+      <form method="POST" enctype="multipart/form-data" action="{{ url_for('folder.upload_file', folder_id=folder.id) }}" class="mt-4">
+
+            <div class="mb-3">
+                <label for="fileUpload" class="form-label">Dosya Seçin</label>
+                <input type="file" name="file" id="fileUpload" class="form-control" required>
+            </div>
+            
+            <!-- Dosya ismini değiştirmek için bir alan -->
+            <div class="mb-3">
+                <label for="fileName" class="form-label">Dosya İsmi</label>
+                <input type="text" name="filename" id="fileName" class="form-control" placeholder="Dosya ismini buraya yazın">
+            </div>
+            
+            <!-- Dosya yükleme butonu -->
+            <button type="submit" class="btn btn-primary mt-2" {% if (total_size / (1024 * 1024)) >= storage_limit %}disabled{% endif %}>Dosya Yükle</button>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+     {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="alert alert-{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+   {% endwith %}
+
+        {% for file in files %}
+        <div class="col-md-4 mb-4"> <!-- 3 sütun için her bir dosya için 4 birimlik alan -->
+            <div class="card">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <!-- Dosya simgesi -->
+                    <img src="{{ url_for('static', filename='img/klasör.jpg') }}" class="card-img-top mb-3" alt="dosya Resmi" style="width: 100%; max-width: 150px; height: auto;">
+                    
+                    <!-- Dosya adı ve boyutu alt kısımda -->
+                    <p class="text-center"><span>{{ file.filename }}</span></p>
+                    <p class="text-center"><span class="badge bg-secondary">{{ (file.size / (1024 * 1024)) | round(2) }} MB</span></p> <!-- Dosya boyutu MB cinsinden -->
+                </div>
+
+                <!-- 3 Nokta (Ellipsis) Menüsü -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        ...
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{{ url_for('folder.rename_file', file_id=file.id) }}">Yeniden Adlandır</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('folder.delete_file', file_id=file.id) }}">Sil</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('folder.download_file', file_id=file.id) }}">İndir</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('folder.move_file', file_id=file.id) }}">Taşı</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // Dosya seçildiğinde dosya ismini ve simgesini göster
+    document.getElementById('fileUpload').addEventListener('change', function(event) {
+        var fileName = event.target.files[0].name;
+        document.getElementById('uploadedFile').style.display = 'block';
+        document.getElementById('uploadedFileName').textContent = fileName;
+    });
+</script>
+{% endblock %}

@@ -143,3 +143,27 @@ p {
     background-color: #d4edda;
     color: #155724;
 }
+
+/* Dropdown butonunun hizalanması */
+.dropdown-toggle {
+    padding: 0.25rem 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* Dropdown menüsünün görünümü */
+.dropdown-menu {
+    min-width: 150px;
+}
+
+/* Dropdown öğelerinin üzerine gelindiğinde stil */
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+/* Dosya simgesinin boyutunu ayarlama */
+.file-icon {
+    width: 40px; /* Set a fixed width or change according to your need */
+    height: auto; /* Maintain the aspect ratio */
+    object-fit: contain; /* Ensure the image is contained within the boundaries */
+}
+
+

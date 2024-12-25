@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div>
+                    <div class="card-header text-center">
+                        <h4>Klasörler</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Klasör Ekleme Butonu -->
+                        <button type="button" class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#createFolderModal">
+                            + Klasör Oluştur
+                        </button>
+
+                        {% if folders %}
+                            <div class="row">
+                                {% for folder in folders %}
+                                    <div class="col-md-4 mb-4">  <!-- Ensure 3 cards per row -->
+                                        <div class="card" style="height: auto;">
+                                            <!-- Klasör resmi -->
+                                            <img src="{{ url_for('static', filename='img/klasör.jpg') }}" class="card-img-top" alt="Klasör Resmi">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title">{{ folder.name }}</h5>
+                                                <div>
+                                                    <a href="{{ url_for('folder.folder_details', folder_id=folder.id) }}" class="btn btn-info btn-sm">Görüntüle</a>
+                                                    <a href="{{ url_for('folder.delete_folder', folder_id=folder.id) }}" class="btn btn-danger btn-sm">Sil</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>Henüz klasörünüz yok. Klasör oluşturabilirsiniz.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Klasör Oluşturma Modal -->
+    <div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createFolderModalLabel">Yeni Klasör Oluştur</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url_for('folder.create_folder') }}" method="POST">
+                        <div class="form-group mb-3">
+                            <label for="folder_name">Klasör Adı</label>
+                            <input type="text" name="folder_name" id="folder_name" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Klasör Oluştur</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

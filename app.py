@@ -10,6 +10,10 @@ from routes.main import main_bp
 from routes.sync import sync_bp
 from routes.team import team_bp
 from routes.dashboard import admin_bp
+from routes.folder_process import folder_bp 
+from threading import Thread
+from models.FileChangeHandler import start_watcher  # Import the file change handler
+
 login_manager = LoginManager()
 
 @login_manager.user_loader
@@ -31,8 +35,9 @@ def create_app():
     app.register_blueprint(sync_bp)
     app.register_blueprint(team_bp)
     app.register_blueprint(admin_bp)
-    
+    app.register_blueprint(folder_bp)
     login_manager.login_view = 'auth.login'
+
 
     return app
 

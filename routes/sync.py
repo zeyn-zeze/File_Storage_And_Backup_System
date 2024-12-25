@@ -4,9 +4,9 @@ from flask_login import current_user, login_required
 from flask import Blueprint, render_template, request, redirect, send_file, url_for, flash, current_app as app
 from werkzeug.utils import secure_filename
 from datetime import datetime
-
 from models.File import File
 from models import db 
+
 
 # Blueprint tanımı
 sync_bp = Blueprint('sync', __name__)
@@ -16,7 +16,6 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 
 # Yedekleme sayfası
@@ -53,11 +52,19 @@ def upload_file():
             db.session.add(new_file)
             db.session.commit()
 
+            # Yedekleme işlemi
+            backup_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'backup')
+            os.makedirs(backup_folder, exist_ok=True)  # Yedekleme klasörünü oluştur
+            backup_path = os.path.join(backup_folder, filename)
 
+            # Eğer yedek dosya yoksa veya kaynak dosya daha yeni ise, yedekleme yap
+            if not os.path.exists(backup_path) or os.path.getmtime(file_path) > os.path.getmtime(backup_path):
+                shutil.copy2(file_path, backup_path)  # Dosyayı yedekleme
 
             flash('File successfully uploaded and backed up', 'success')
             return redirect(url_for('sync.upload_file'))
     return render_template('upload.html')
+
 
 # Dosya açma
 @sync_bp.route('/open/<int:file_id>', methods=['GET'])
@@ -70,37 +77,45 @@ def open_file(file_id):
             return send_file(file_path, as_attachment=False)
         else:
             flash('File not found on the server', 'danger')
-        
             return redirect(url_for('sync.upload_file'))
     else:
         flash('File not found in database', 'danger')
-     
         return redirect(url_for('sync.backup_files'))
 
-# Dosya silme
 @sync_bp.route('/delete/<int:file_id>', methods=['GET'])
 @login_required
 def delete_file(file_id):
     try:
+        # Fetch the file record from the database
         file_record = File.query.filter_by(id=file_id, owner_id=current_user.user_id).first()
+        print(f"File ID: {file_id}")  # Add this print statement for debugging
+
         if file_record:
+            # Get the file paths
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_record.filename)
+            backup_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'backup')
+            backup_path = os.path.join(backup_folder, file_record.filename)
+
+            print(f"Deleting file: {file_path}")
+            print(f"Deleting backup file: {backup_path}")
+
+            # Check and delete original file
             if os.path.exists(file_path):
                 os.remove(file_path)
+                print(f"File {file_path} deleted.")
             else:
                 flash(f'Dosya bulunamadı: {file_path}', 'danger')
 
-            backup_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'backup')
-            backup_path = os.path.join(backup_folder, file_record.filename)
+            # Check and delete backup file
             if os.path.exists(backup_path):
                 os.remove(backup_path)
+                print(f"Backup {backup_path} deleted.")
             else:
                 flash(f'Yedek dosya bulunamadı: {backup_path}', 'danger')
 
+            # Delete file record from the database
             db.session.delete(file_record)
             db.session.commit()
-
-          
 
             flash('File successfully deleted', 'success')
         else:
@@ -108,6 +123,7 @@ def delete_file(file_id):
 
     except Exception as e:
         flash(f'Error deleting file: {str(e)}', 'danger')
+        print(f"Error: {str(e)}")
 
     return redirect(url_for('sync.backup_files'))
 
@@ -122,9 +138,10 @@ def auto_backup():
     for file_record in user_files:
         source_path = file_record.filepath
         backup_path = os.path.join(backup_folder, file_record.filename)
+
+        # Yedekleme yapılması gereken dosyayı kontrol et
         if not os.path.exists(backup_path) or os.path.getmtime(source_path) > os.path.getmtime(backup_path):
             shutil.copy2(source_path, backup_path)
-         
 
     flash('All files successfully backed up', 'success')
     return redirect(url_for('sync.backup_files'))

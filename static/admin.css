@@ -234,3 +234,58 @@ input[type="text"] {
 .status-pending {
     color: orange;
 }
+
+/* Style for the backup file box */
+.backup-file-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    justify-content: space-between;  /* This ensures space between items */
+}
+
+.backup-file-image {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.file-details {
+    flex-grow: 1; /* Allows the details to take up remaining space */
+}
+
+.delete-form {
+    display: flex;
+    justify-content: flex-end;  /* Ensures the form button is aligned to the right */
+}
+
+.table-container {
+    max-height: 300px; /* Tablonun maksimum yüksekliği */
+    overflow-y: auto; /* Yalnızca dikey kaydırma çubuğu */
+    border: 1px solid #ddd; /* Çerçeve görünümü */
+    margin-top: 10px; /* Üst boşluk */
+}
+
+.table-container table {
+    width: 100%; /* Tablonun kapsayıcıya uyması */
+    border-collapse: collapse; /* Çerçeveleri birleştir */
+}
+
+.table-container th, .table-container td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Çizgiler */
+}
+
+.table-container tr:hover {
+    background-color: #f1f1f1; /* Hover efekti */
+}
+
+.anomally-log{
+
+    background-color: crimson;
+    color: aliceblue;
+}

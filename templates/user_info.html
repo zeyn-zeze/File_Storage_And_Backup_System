@@ -51,7 +51,8 @@
     <h3>Takımlar</h3>
     <ul>
         {% for team in teams %}
-            <li>
+            <li class="backup-file-box">
+                <img src="{{ url_for('static', filename='img/takım.jpg') }}" alt="File Image" class="backup-file-image">
                 {{ team.team.name }} - Rol: {{ team.role }}
                 <form method="POST" action="{{ url_for('admin.delete_team', team_id=team.team.id, user_id=user.user_id) }}" style="display: inline;">
                     <button type="submit" style="color: red;">Sil</button>
@@ -67,26 +68,28 @@
     <h3>Yedeklenmiş Dosyalar</h3>
     <ul>
         {% for file in backup_files %}
-            <li>
-                {{ file.name }} ({{ file.date_added }})
-                <form method="POST" action="{{ url_for('admin.delete_backup_file', file_id=file.id, user_id=user.user_id) }}" style="display: inline;">
-                    <button type="submit" style="color: red;">Sil</button>
-                </form>
-            </li>
+        <li class="backup-file-box">
+            <img src="{{ url_for('static', filename='img/yedek.jpg') }}" alt="File Image" class="backup-file-image">
+            <div class="file-details">
+                <p>{{ file.filename }} ({{ file.created_at }})</p>
+            </div>
+            <form method="POST" action="{{ url_for('admin.delete_backup_file', file_id=file.id, user_id=user.user_id) }}" class="delete-form">
+                <button type="submit" style="color: red;">Sil</button>
+            </form>
+        </li>
         {% else %}
             <li>Bu kullanıcının yedeklenmiş dosyası yok.</li>
         {% endfor %}
     </ul>
+    
+
 </div>
 
 <script>
-  
-        // Update the storage limit display when the slider is changed
-        document.getElementById("storage_limit").addEventListener("input", function() {
-            document.getElementById("storage_value").textContent = this.value + " MB";
-        });
-    
-    
+    // Update the storage limit display when the slider is changed
+    document.getElementById("storage_limit").addEventListener("input", function() {
+        document.getElementById("storage_value").textContent = this.value + " MB";
+    });
 </script>
 
 {% endblock %}

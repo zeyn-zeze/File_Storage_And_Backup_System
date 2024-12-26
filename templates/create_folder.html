@@ -7,6 +7,28 @@
                 <div>
                     <div class="card-header text-center">
                         <h4>Klasörler</h4>
+                        
+    <!-- Kullanıcı alanının ilerleme çubuğu -->
+    <div class="mb-4">
+        <strong>Kullanılan Alan</strong>
+        <div class="progress" style="height: 25px;">
+            {% set total_space = storage_limit %} <!-- 6144 MB toplam alan -->
+            {% set used_space = total_size / (1024 * 1024) %} <!-- MB cinsine çevir -->
+            {% set progress_percentage = (used_space / total_space) * 100 %}
+            <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%; background-color: green;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <span>{{ used_space | round(2) }} MB</span> <!-- Kullanılan alan MB cinsinden -->
+            <span>{{ total_space }} MB</span> <!-- Toplam alan MB cinsinden -->
+        </div>
+    </div>
+
+    <!-- Storage Limit Warning -->
+    {% if total_size / (1024 * 1024) > storage_limit %}
+    <div class="alert alert-danger" role="alert">
+        Uyarı: Toplam depolama alanınız sınıra yaklaşmakta veya aşıyor. Dosya yüklemeniz engellenebilir.
+    </div>
+    {% endif %}
                     </div>
                     <div class="card-body">
                         <!-- Klasör Ekleme Butonu -->

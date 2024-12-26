@@ -27,7 +27,6 @@
                                 <input type="hidden" name="request_id" value="{{ request.id }}">
                                 <button type="submit" name="action" value="approve" class="btn btn-success">Onayla</button>
                                 <button type="submit" name="action" value="reject" class="btn btn-danger">Reddet</button>
-                                
                             </form>
                         </td>
                     </tr>
@@ -39,47 +38,51 @@
     <!-- Loglar -->
     <div class="dashboard-section">
         <h2>Loglar</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Log ID</th>
-                    <th>Zaman Damgası</th>
-                    <th>Mesaj</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for log in logs %}
+        <div class="table-container">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ log.log_id }}</td>
-                        <td>{{ log.timestamp }}</td>
-                        <td>{{ log.message }}</td>
+                        <th>Log Dosyası</th>
+                        <th>Zaman Damgası</th>
+                        <th>Mesaj</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                        <tr>
+                            <td>{{ log.log_file }}</td>
+                            <td>{{ log.timestamp }}</td>
+                            <td>{{ log.message }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Anomali Loglar -->
     <div class="dashboard-section">
         <h2>Anomali Loglar</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Log ID</th>
-                    <th>Zaman Damgası</th>
-                    <th>Mesaj</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for log in anomaly_logs %}
-                    <tr style="color: red;">
-                        <td>{{ log.log_id }}</td>
-                        <td>{{ log.timestamp }}</td>
-                        <td>{{ log.message }}</td>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Log Dosyası</th>
+                        <th>Zaman Damgası</th>
+                        <th>Mesaj</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for log in anomaly_logs %}
+                        <tr >
+                            <td >{{ log.log_file }}</td>
+                            <td >{{ log.timestamp }}</td>
+                            <td class="anomally-log">{{ log.message }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

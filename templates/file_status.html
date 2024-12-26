@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h4>Dosya Durumları</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Dosya Adı</th>
+                <th>Boyut</th>
+                <th>Durum</th>
+                <th>Senkronizasyon</th>
+                <th>Yedekleme</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.filename }}</td>
+                <td>{{ (file.size / (1024 * 1024)) | round(2) }} MB</td>
+                <td>
+                    {% if file.is_synced %}
+                        <span class="badge bg-success">Senkronize</span>
+                    {% else %}
+                        <span class="badge bg-warning">Asenkron</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if file.is_backed_up %}
+                        <span class="badge bg-success">Yedeklendi</span>
+                    {% else %}
+                        <span class="badge bg-danger">Yedeklenmedi</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{ url_for('folder.sync_file', file_id=file.id) }}" class="btn btn-secondary btn-sm">Senkronize Et</a>
+                    <a href="{{ url_for('folder.backup_file', file_id=file.id) }}" class="btn btn-primary btn-sm">Yedekle</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

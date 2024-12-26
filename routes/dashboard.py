@@ -1,24 +1,59 @@
+from datetime import datetime
+import os
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
+from islemler.log_manager import LogManager as log_manager
 from models.File import File
+from models.Logs import Log
 from models.Notification import Notification
 from models.TeamMember import TeamMember
 from models.User import User
 from models.Team import Team
 from models.PasswordChangeRequest import PasswordChangeRequest
 from models import  db,bcrypt
+from utils.notifc import send_password_change_notification
+
 
 admin_bp = Blueprint('admin', __name__)
 
 from flask_login import current_user, login_required
+
+
+
+
 
 @admin_bp.route('/admin/dashboard')
 def dashboard():
     if current_user.is_authenticated:
         if current_user.role == 'admin':
             password_requests = PasswordChangeRequest.query.filter_by(status='pending').all()
-            logs = []  # Log verisi ekleyin
-            anomaly_logs = []  # Anomali logları ekleyin
+
+            logs = []
+            anomaly_logs = []
+
+            # Tüm log dosyalarını oku
+            logs_directory = "./logs"
+            try:
+                for log_file in os.listdir(logs_directory):
+                    file_path = os.path.join(logs_directory, log_file)
+                    if os.path.isfile(file_path):
+                        with open(file_path, "r", encoding="utf-8") as file:
+                            for line in file:
+                                # Sadece "anormallik.txt" için anomaly_logs'e ekle
+                                if log_file == "anormallik.txt":
+                                    anomaly_logs.append({
+                                        "log_file": log_file,
+                                        "message": line.strip(),
+                                        "timestamp": line.split(" - ")[0] if " - " in line else "Bilinmiyor"
+                                    })
+                                else:  # Diğer loglar için logs'e ekle
+                                    logs.append({
+                                        "log_file": log_file,
+                                        "message": line.strip(),
+                                        "timestamp": line.split(" - ")[0] if " - " in line else "Bilinmiyor"
+                                    })
+            except Exception as e:
+                flash(f"Logları okurken bir hata oluştu: {str(e)}", "danger")
 
             return render_template('admin_dashboard.html',
                                    password_requests=password_requests,
@@ -30,7 +65,7 @@ def dashboard():
     else:
         flash('Giriş yapmanız gerekiyor!', 'danger')
         return redirect(url_for('auth.admin_login'))  # Giriş yapmamış kullanıcıyı login sayfasına yönlendir
-
+ # Giriş yapmamış kullanıcıyı login sayfasına yönlendir
 
 
 # Route for displaying users and handling the update form
@@ -105,12 +140,11 @@ def user_info(user_id):
 
     # Fetch teams and backup files
     teams = TeamMember.query.filter_by(user_id=user_id).all()
+    # Fetching backup files for a specific user
     backup_files = File.query.filter_by(owner_id=user_id).all()
 
-    return render_template('user_info.html', user=user, teams=teams, backup_files=backup_files)
 
-
-
+    return render_template('user_info.html', user=user, teams=teams,backup_files=backup_files)
 
 
 
@@ -125,8 +159,6 @@ def delete_team():
         db.session.delete(team)
         db.session.commit()
     return redirect(url_for('admin.user_info', user_id=user_id))
-
-
 
 
 
@@ -158,14 +190,32 @@ def manage_password_requests():
                 if action == 'approve':
                     # Şifre değişim talebini onayla
                     reset_request.status = 'approved'
-
-                    # Update the user's password with the hashed new password
-                    user.password = reset_request.new_password  # Use the hashed password
+                    user.password = bcrypt.generate_password_hash(reset_request.new_password).decode('utf-8')  # Yeni şifreyi hashle
                     db.session.commit()
+
+                    # Loglama (Onaylanan talep)
+                    log_manager.log_password_change(
+                        username=user.username,
+                        status_code="APPROVED"
+                    )
+
+                    # Bildirim gönder
+                    send_password_change_notification(user, "Şifre değişiklik talebiniz onaylanmıştır.")
+                    
                     flash(f"{user.username} kullanıcısının şifre değişiklik isteği onaylandı.", "success")
                 elif action == 'reject':
                     reset_request.status = 'rejected'
                     db.session.commit()
+
+                    # Loglama (Reddedilen talep)
+                    log_manager.log_password_change(
+                        username=user.username,
+                        status_code="REJECTED"
+                    )
+
+                    # Bildirim gönder
+                    send_password_change_notification(user, "Şifre değişiklik talebiniz reddedilmiştir.")
+                    
                     flash(f"{user.username} kullanıcısının şifre değişiklik isteği reddedildi.", "danger")
             else:
                 flash("Kullanıcı bulunamadı.", "danger")
@@ -177,7 +227,13 @@ def manage_password_requests():
 
 
 
-
-
-
-
+@admin_bp.route('/delete_backup_file/<int:file_id>/<int:user_id>', methods=['POST'])
+def delete_backup_file(file_id, user_id):
+    file_to_delete = File.query.get(file_id)
+    if file_to_delete:
+        db.session.delete(file_to_delete)
+        db.session.commit()
+        flash("Backup file deleted successfully.", "success")
+    else:
+        flash("File not found.", "danger")
+    return redirect(url_for('admin.user_info', user_id=user_id))

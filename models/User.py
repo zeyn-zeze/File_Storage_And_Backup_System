@@ -9,6 +9,8 @@ class User(db.Model, UserMixin):  # UserMixin burada ekleniyor
     password = db.Column(db.String(60), nullable=False)
     role = db.Column(db.String(60), default='individual')  # 'individual' rolü varsayılan olarak atanacak
     storage_limit = db.Column(db.Integer, default=6144) 
+    failed_attempts = db.Column(db.Integer, default=0)
+    profile_status = db.Column(db.String(20))
 
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')

@@ -1,0 +1,11 @@
+2024-12-26 20:05:16.440205 - Dosya başarıyla yüklendi: Fim_recommendation.docx - 2024-12-26 20:05:16.439010
+2024-12-26 20:08:28.428461 -  film_onerisi_dosyas.docxDosya adı değiştirildi: film_onerisi_dosyas.docx - 2024-12-26 20:08:28.427452
+2024-12-26 21:08:15.542366 -  film_onerisi_dosyas.docxDosya adı değiştirildi: film_onerisi_dosyas.docx - 2024-12-26 21:08:15.541404
+2024-12-26 21:09:00.749090 - Dosya başarıyla yüklendi: takm.jpg - 2024-12-26 21:09:00.748090
+2024-12-26 21:18:41.521821 - Dosya başarıyla yüklendi: Fim_recommendation.docx - 2024-12-26 21:18:41.520713
+2024-12-26 21:29:01.702507 - Dosya başarıyla yüklendi: YZM1_4.docx - 2024-12-26 21:29:01.702507
+2024-12-26 21:33:35.246028 - Dosya başarıyla yüklendi: JavaProje_Gereksinimleri_1.docx - 2024-12-26 21:33:35.245458
+2024-12-26 21:41:58.625699 - Dosya başarıyla yüklendi: Odev_3.pdf - 2024-12-26 21:41:58.625160
+2024-12-26 21:42:18.919508 -  Odev3.pdfDosya adı değiştirildi: Odev3.pdf - 2024-12-26 21:42:18.918495
+2024-12-27 00:50:35.058323 - Dosya başarıyla yüklendi: YAZILIM_GELISTIRME_I_-_PROJE_II.pdf - 2024-12-27 00:50:35.056847
+2024-12-27 01:48:39.682619 - Dosya silindi: YAZILIM_GELISTIRME_I_-_PROJE_II.pdf - 2024-12-27 01:48:39.681604

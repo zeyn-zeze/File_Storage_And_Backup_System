@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h3 class="text-center mb-4">Bildirimler</h3>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% if notifications %}
+                <div class="list-group">
+                    {% for notification in notifications %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <!-- Add icons based on notification type -->
+                                <i class="fas {{ 'fa-check-circle text-success' if notification.type == 'success' else 'fa-info-circle text-primary' if notification.type == 'info' else 'fa-exclamation-circle text-danger' }} me-3"></i>
+                                <span>{{ notification.message }}</span>
+                            </div>
+                            <span class="text-muted" style="font-size: 0.8rem;">{{ notification.timestamp.strftime('%d-%m-%Y %H:%M') }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                {% else %}
+                    <div class="alert alert-info text-center">
+                        Hiç bildirim yok.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">

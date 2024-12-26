@@ -125,3 +125,25 @@ h3 {
 .d-flex.justify-content-center {
     margin-top: 30px;
 }
+
+
+/* Hover effect for notifications */
+.list-group-item:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.list-group-item {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+/* Center the timestamp */
+.list-group-item .text-muted {
+    font-size: 0.9rem;
+    text-align: right;
+    width: 120px;
+}

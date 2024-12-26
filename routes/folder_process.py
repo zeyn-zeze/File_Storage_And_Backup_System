@@ -6,7 +6,10 @@ from models.Folder import Folder
 from models.File import File
 from datetime import datetime
 import os
-import shutil
+from utils.utils import save_log 
+
+
+
 
 folder_bp = Blueprint('folder', __name__)
 
@@ -16,25 +19,14 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def calculate_total_size(files):
-    """Klasördeki toplam dosya boyutunu hesapla."""
-    return sum(file.size for file in files)
+def calculate_total_size(folders):
+    total_size = 0
+    for folder in folders:
+        if hasattr(folder, 'files'):  # Klasörde `files` ilişkisi var mı kontrol edin
+            total_size += sum(file.size for file in folder.files)  # Dosya boyutlarını topla
+    return total_size
 
-def backup_file(file_record):
-    """Dosya yedekleme işlemi."""
-    # Yedekleme klasörünü belirle
-    backup_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'backup', file_record.folder.name)
-    os.makedirs(backup_folder, exist_ok=True)
-
-    # Yeni dosya adıyla yedek dosya yolu
-    backup_path = os.path.join(backup_folder, file_record.filename)
-
-    # Eğer yedek dosyası yoksa ya da eski dosya daha yeni ise, yedekle
-    if not os.path.exists(backup_path) or os.path.getmtime(file_record.filepath) > os.path.getmtime(backup_path):
-        shutil.copy2(file_record.filepath, backup_path)
-        flash(f'Dosya "{file_record.filename}" başarıyla yedeklendi.', 'success')
-    else:
-        flash(f'Dosya "{file_record.filename}" zaten güncel.', 'info')
+        
 @folder_bp.route('/upload/<int:folder_id>', methods=['GET', 'POST'])
 @login_required
 def upload_file(folder_id):
@@ -85,15 +77,22 @@ def upload_file(folder_id):
 
             flash("Dosya başarıyla yüklendi!", 'success')
 
-            # Yedekleme işlemi
-            backup_file(new_file)
+
+
+            
+            save_log("folder", f"Dosya başarıyla yüklendi: {new_file.filename} - {datetime.now()}")
+
         except Exception as e:
             db.session.rollback()
             flash(f"Veritabanı hatası: {e}", 'danger')
+            save_log("anormallik", f"Dosya yüklenirken bir hata oluştu: {e}")
 
         return redirect(url_for('folder.folder_details', folder_id=folder_id))
 
     return render_template('folder_details.html', folder=folder, files=folder.files, total_size=total_size, storage_limit=storage_limit)
+
+
+
 
 @folder_bp.route('/rename_file/<int:file_id>', methods=['POST'])
 @login_required
@@ -120,19 +119,21 @@ def rename_file(file_id):
             file.filepath = new_file_path  # Dosyanın yeni yolunu güncelle
             db.session.commit()  # Veritabanına kaydet
 
-            # Yeni dosya adıyla yedekleme işlemini gerçekleştir
-            backup_file(file)
+            # Loglama
+            save_log("folder", f" {file.filename}Dosya adı değiştirildi: {file.filename} - {datetime.now()}")
 
             flash('Dosya adı başarıyla değiştirildi!', 'success')
             return redirect(request.referrer)  # Aynı sayfaya geri döndür
 
         except Exception as e:
             flash(f"Dosya adı değiştirilirken bir hata oluştu: {e}", 'danger')
+            save_log("folder", f"Dosya adı değiştirilirken bir hata oluştu: {e}")
             return redirect(request.referrer)
 
     else:
         flash('Dosya bulunamadı.', 'danger')
         return redirect(request.referrer)
+
 
 @folder_bp.route('/delete_file/<int:file_id>', methods=['GET'])
 @login_required
@@ -144,12 +145,18 @@ def delete_file(file_id):
         os.remove(file.filepath)  # Remove the physical file
         db.session.delete(file)
         db.session.commit()
+
+        # Loglama
+        save_log("folder", f"Dosya silindi: {file.filename} - {datetime.now()}")
+
         flash('Dosya başarıyla silindi.', 'success')
     except Exception as e:
         db.session.rollback()
         flash(f"Dosya silinirken bir hata oluştu: {e}", 'danger')
+        save_log("anormallik", f"Dosya silinirken bir hata oluştu: {e}")
 
     return redirect(url_for('folder.folder_details', folder_id=folder_id))
+
 
 @folder_bp.route('/folder/<int:folder_id>', methods=['GET', 'POST'])
 @login_required
@@ -209,7 +216,9 @@ def delete_folder(folder_id):
 def list_folders():
     # Veritabanından kullanıcıya ait tüm klasörleri alıyoruz
     folders = Folder.query.filter_by(owner_id=current_user.user_id).all()
-    return render_template('create_folder.html', folders=folders)
+    total_size = calculate_total_size(folders)
+    storage_limit = current_user.storage_limit
+    return render_template('create_folder.html', folders=folders,total_size=total_size,storage_limit=storage_limit)
 
 
 @folder_bp.route('/download_file/<int:file_id>', methods=['GET'])
@@ -222,7 +231,14 @@ def download_file(file_id):
     
     if not os.path.exists(file_path):
         flash('Dosya bulunamadı.', 'danger')
+        
+        # Log the failed attempt to download the file
+        save_log("anormallik", f"Dosya bulunamadı: {file.filename} - {datetime.now()}")
+        
         return redirect(url_for('folder.folder_details', folder_id=file.folder_id))
+    
+    # Log the successful download attempt
+    save_log("folder", f"Dosya indirildi: {file.filename} - {datetime.now()}")
     
     # Send the file to the user
     return send_file(file_path, as_attachment=True, download_name=file.filename)
@@ -231,20 +247,58 @@ def download_file(file_id):
 @folder_bp.route('/move_file/<int:file_id>', methods=['GET', 'POST'])
 @login_required
 def move_file(file_id):
+    # Dosya bilgisi alınır
     file = File.query.get_or_404(file_id)
     
+    # Kullanıcıya ait klasörleri al (dosyanın mevcut olduğu klasör hariç)
+    folders = Folder.query.filter_by(owner_id=current_user.user_id, id = file.id).all()
+
     if request.method == 'POST':
-        new_folder_id = request.form.get('new_folder_id')  # New folder ID
-        new_folder = Folder.query.get_or_404(new_folder_id)
-        
-        # Update the file's folder association
-        file.folder_id = new_folder.id
-        db.session.commit()
-        
-        flash('Dosya başarıyla taşındı!', 'success')
-        return redirect(url_for('folder.folder_details', folder_id=new_folder.id))
-    
-    # Get all folders owned by the user
-    folders = Folder.query.filter_by(owner_id=current_user.user_id).all()
-    return render_template('move_file.html', file=file, folders=folders)
+        # Kullanıcının seçtiği klasör ID'sini al
+        selected_folder_id = request.form.get('folder')
+        selected_folder = Folder.query.get(selected_folder_id)
+
+        # Seçilen klasörün geçerli olup olmadığını kontrol et
+        if selected_folder and selected_folder.owner_id == current_user.user_id:
+            # Eski ve yeni dosya yolu
+            old_path = file.filepath
+            new_path = os.path.join(app.config['UPLOAD_FOLDER'], selected_folder.name, file.filename)
+
+            try:
+                # Yeni klasör yoksa oluştur
+                os.makedirs(os.path.dirname(new_path), exist_ok=True)
+
+                # Dosyayı taşı
+                os.rename(old_path, new_path)
+
+                # Veritabanını güncelle
+                file.folder_id = selected_folder.id
+                file.filepath = new_path
+                db.session.commit()
+
+                # Loglama
+                save_log("folder", f"Dosya taşındı: {file.filename} -> {selected_folder.name}")
+                flash('Dosya başarıyla taşındı.', 'success')
+            except Exception as e:
+                db.session.rollback()
+                save_log("anormallik", f"Dosya taşınırken hata: {e}")
+                flash(f"Dosya taşınırken bir hata oluştu: {e}", 'danger')
+            
+            return redirect(url_for('folder.folder_details', folder_id=selected_folder.id))
+        else:
+            flash('Geçersiz klasör seçimi.', 'danger')
+
+    # GET isteği sırasında klasör listesini ve dosya bilgisini şablona gönder
+    return render_template('file_details.html', file=file, folders=folders)
+
+
+
+@folder_bp.route('/file_status', methods=['GET'])
+@login_required
+def file_status():
+    files = File.query.filter_by(owner_id=current_user.user_id).all()
+    return render_template('file_status.html', files=files)
+
+
+
 

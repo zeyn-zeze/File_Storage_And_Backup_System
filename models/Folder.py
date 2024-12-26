@@ -7,12 +7,12 @@ class Folder(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)  # 'users' tablosuyla ilişki
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     # İlişkiler
-    user = db.relationship('User', backref='folders', lazy=True)
-    files = db.relationship('File', backref='parent_folder', lazy=True)  # This is fine, as 'parent_folder' is now unique
+    user = db.relationship('User', backref='folders', lazy=True)  # Kullanıcı ile ilişki
+    files = db.relationship('File', backref='file', lazy=True)  # Dosyalar ile ilişki
 
     def __init__(self, owner_id, name, created_at):
         self.owner_id = owner_id
@@ -21,5 +21,3 @@ class Folder(db.Model):
 
     def __repr__(self):
         return f'<Folder {self.name}>'
-
-

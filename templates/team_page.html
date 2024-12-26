@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-md-10 offset-md-1">
             <!-- Make the team name clickable, linking to team info page -->
             <a href="{{ url_for('team.team_info', team_id=team.id) }}">
                 <h2 class="text-center mb-4" style="color: black;">{{ team.name }}</h2>
@@ -16,23 +16,50 @@
 
             <div class="list-group">
                 {% for post in posts %}
-                    <div class="list-group-item d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#postModal{{ post.id }}">
-                        <div>
-                            <strong>{{ post.content }}</strong> <br> <!-- Showing first 10 words -->
-                            <small>Gönderen: {{ post.user.username }} | Tarih:{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                    <div class="list-group-item d-flex align-items-center {% if post.user.user_id == current_user.user_id %}justify-content-end text-end{% else %}justify-content-start{% endif %}">
+                        <!-- Make the card wider by adjusting grid system -->
+                        <div class="card p-2 w-100 h-100">
+                            <!-- Post content and dropdown menu -->
+                            <div class="clickable-content" data-bs-toggle="modal" data-bs-target="#postModal{{ post.id }}">
+                                <strong>{{ post.content }}</strong> <br>
+                                <small>Gönderen: {{ post.user.username }} | Tarih:{{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                            </div>
+                            
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="postOptions{{ post.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                    ...
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="postOptions{{ post.id }}">
+                                    <li><a class="dropdown-item" href="{{ url_for('team.open_post', post_id=post.id) }}">Aç</a></li>
+                                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#renamePostModal{{ post.id }}">Yeniden Adlandır</a></li>
+                                    <li>
+                                        <form action="{{ url_for('team.delete_post', post_id=post.id) }}" method="POST" onsubmit="return confirm('Gönderiyi silmek istediğinizden emin misiniz?');">
+                                            <button type="submit" class="dropdown-item text-danger">Sil</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="postOptions{{ post.id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                ...
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="postOptions{{ post.id }}">
-                                <li><a class="dropdown-item" href="{{ url_for('team.open_post', post_id=post.id) }}">Aç</a></li>
-                                <li>
-                                    <form action="{{ url_for('team.delete_post', post_id=post.id) }}" method="POST" onsubmit="return confirm('Gönderiyi silmek istediğinizden emin misiniz?');">
-                                        <button type="submit" class="dropdown-item text-danger">Sil</button>
+                    </div>
+
+                    <!-- Modal for renaming post and its associated file -->
+                    <div class="modal fade" id="renamePostModal{{ post.id }}" tabindex="-1" aria-labelledby="renamePostModalLabel{{ post.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="renamePostModalLabel{{ post.id }}">Gönderi Yeniden Adlandır</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('team.rename_post', post_id=post.id) }}" method="POST">
+                                        <div class="mb-3">
+                                            <label for="new_name" class="form-label">Yeni Dosya Adı</label>
+                                            <input type="text" class="form-control" id="new_name" name="new_name" value="{{ post.file.filename if post.file else '' }}" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Kaydet</button>
                                     </form>
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

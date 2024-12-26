@@ -1,9 +1,12 @@
 from datetime import datetime
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from flask_login import current_user, login_required
+from islemler.log_manager import LogManager as log_manager
+from models.Notification import Notification
 from models.PasswordChangeRequest import PasswordChangeRequest
 from models.User import User
 from models import db,bcrypt
+from utils.utils import save_log
 
 # Blueprint oluşturma
 main_bp = Blueprint('main', __name__)
@@ -48,6 +51,8 @@ def profile():
 @main_bp.route('/edit_profile')
 @login_required
 def edit_profile():
+    
+    save_log("profile", f"Profil bilgileri başarıyla güncellendi : {current_user.username} - {current_user.email} - {datetime.now()}")
     return redirect(url_for('main.profile', edit=True))  # Düzenleme moduna geçiş için 'edit' parametresi ekleniyor
 
 # Şifre değiştirme işlemi
@@ -82,10 +87,23 @@ def change_password():
     db.session.add(password_request)
     db.session.commit()
 
+    # Log the password change request
+    log_manager.log_password_change_request(
+        username=current_user.username, 
+        status_code="REQUESTED"
+    )
+
     flash('Şifre değişikliği talebiniz iletildi. Yönetici onayı bekleniyor.', 'info')
     return redirect(url_for('main.profile'))
 
 
 
 
+@main_bp.route('/notifications', methods=['GET'])
+@login_required
+def notifications():
+    # Kullanıcıya ait tüm bildirimleri al
+    notifications = Notification.query.filter_by(user_id=current_user.user_id).order_by(Notification.timestamp.desc()).all()
+
+    return render_template('bildirimler.html', notifications=notifications)
 

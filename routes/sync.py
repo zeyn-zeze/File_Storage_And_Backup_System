@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, request, redirect, send_file, url_
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from models.File import File
-from models import db 
+from models import db
 
 
 # Blueprint tanımı
@@ -47,7 +47,9 @@ def upload_file():
                 owner_id=current_user.user_id,
                 filename=filename,
                 filepath=file_path,
-                created_at=datetime.now()
+                created_at=datetime.now(),
+                is_backup=0,  # Başlangıçta yedeklenmemiş olarak işaretle
+                is_sync=0     # Başlangıçta senkronize edilmemiş olarak işaretle
             )
             db.session.add(new_file)
             db.session.commit()
@@ -61,7 +63,19 @@ def upload_file():
             if not os.path.exists(backup_path) or os.path.getmtime(file_path) > os.path.getmtime(backup_path):
                 shutil.copy2(file_path, backup_path)  # Dosyayı yedekleme
 
-            flash('File successfully uploaded and backed up', 'success')
+                # Yedekleme tamamlandı, is_backup'ı 1 yap
+                new_file.is_backup = 1
+                db.session.commit()  # Veritabanını güncelle
+
+            # Senkronizasyon işlemi
+            if new_file.is_backup:
+                shutil.copy2(file_path, backup_path)  # Senkronizasyon
+
+                # Senkronizasyon tamamlandı, is_sync'ı 1 yap
+                new_file.is_sync = 1
+                db.session.commit()  # Veritabanını güncelle
+
+            flash('File successfully uploaded, backed up, and synchronized', 'success')
             return redirect(url_for('sync.upload_file'))
     return render_template('upload.html')
 
@@ -127,21 +141,19 @@ def delete_file(file_id):
 
     return redirect(url_for('sync.backup_files'))
 
-# Yedekleme işlemi (otomatik yedekleme modülü)
-@sync_bp.route('/auto_backup', methods=['POST'])
+
+
+@sync_bp.route('/download/<int:file_id>', methods=['GET'])
 @login_required
-def auto_backup():
-    backup_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'backup')
-    os.makedirs(backup_folder, exist_ok=True)
-
-    user_files = File.query.filter_by(owner_id=current_user.user_id).all()
-    for file_record in user_files:
-        source_path = file_record.filepath
-        backup_path = os.path.join(backup_folder, file_record.filename)
-
-        # Yedekleme yapılması gereken dosyayı kontrol et
-        if not os.path.exists(backup_path) or os.path.getmtime(source_path) > os.path.getmtime(backup_path):
-            shutil.copy2(source_path, backup_path)
-
-    flash('All files successfully backed up', 'success')
-    return redirect(url_for('sync.backup_files'))
+def download_file(file_id):
+    file_record = File.query.filter_by(id=file_id, owner_id=current_user.user_id).first()
+    if file_record:
+        file_path = file_record.filepath
+        if os.path.exists(file_path):
+            return send_file(file_path, as_attachment=True, download_name=file_record.filename)
+        else:
+            flash('Dosya sunucuda bulunamadı.', 'danger')
+            return redirect(url_for('sync.backup_files'))
+    else:
+        flash('Dosya bulunamadı veya yetkisiz erişim.', 'danger')
+        return redirect(url_for('sync.backup_files'))

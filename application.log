@@ -1,0 +1,150 @@
+2024-12-26 16:31:18,021 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-26 16:31:18,022 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-26 16:31:18,024 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:31:18,807 - WARNING -  * Debugger is active!
+2024-12-26 16:31:18,813 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:31:23,287 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:23] "[32mGET / HTTP/1.1[0m" 302 -
+2024-12-26 16:31:23,300 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:23] "GET /login HTTP/1.1" 200 -
+2024-12-26 16:31:23,428 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:23] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-12-26 16:31:23,431 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:23] "[36mGET /static/img/logo.png HTTP/1.1[0m" 304 -
+2024-12-26 16:31:23,433 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:23] "[36mGET /static/img/bg.jpg HTTP/1.1[0m" 304 -
+2024-12-26 16:31:36,038 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:36] "[32mPOST /login HTTP/1.1[0m" 302 -
+2024-12-26 16:31:36,069 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:36] "GET /home HTTP/1.1" 200 -
+2024-12-26 16:31:36,092 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:36] "GET /static/home_base.css HTTP/1.1" 200 -
+2024-12-26 16:31:39,146 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:39] "GET /folders HTTP/1.1" 200 -
+2024-12-26 16:31:39,163 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:39] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:31:39,171 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:39] "GET /static/img/klasör.jpg HTTP/1.1" 200 -
+2024-12-26 16:31:45,255 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:45] "[32mPOST /create HTTP/1.1[0m" 302 -
+2024-12-26 16:31:45,268 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:45] "GET /folders HTTP/1.1" 200 -
+2024-12-26 16:31:45,292 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:45] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:31:45,294 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:45] "[36mGET /static/img/klasör.jpg HTTP/1.1[0m" 304 -
+2024-12-26 16:31:46,872 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:46] "GET /folder/5 HTTP/1.1" 200 -
+2024-12-26 16:31:46,892 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:46] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:31:58,039 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:58] "[32mPOST /upload/5 HTTP/1.1[0m" 302 -
+2024-12-26 16:31:58,054 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:58] "GET /folder/5 HTTP/1.1" 200 -
+2024-12-26 16:31:58,076 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:58] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:31:58,078 - INFO - 127.0.0.1 - - [26/Dec/2024 16:31:58] "[36mGET /static/img/klasör.jpg HTTP/1.1[0m" 304 -
+2024-12-26 16:32:01,336 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:01] "GET /notifications HTTP/1.1" 200 -
+2024-12-26 16:32:01,355 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:01] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:05,918 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:05] "GET /backup HTTP/1.1" 200 -
+2024-12-26 16:32:05,934 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:05] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:12,680 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:12] "GET /profile HTTP/1.1" 200 -
+2024-12-26 16:32:12,697 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:12] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:14,058 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:14] "GET /backup HTTP/1.1" 200 -
+2024-12-26 16:32:14,077 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:14] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:15,192 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:15] "GET /teams HTTP/1.1" 200 -
+2024-12-26 16:32:15,210 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:15] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:19,904 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:19] "GET /folders HTTP/1.1" 200 -
+2024-12-26 16:32:19,924 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:19] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:19,926 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:19] "[36mGET /static/img/klasör.jpg HTTP/1.1[0m" 304 -
+2024-12-26 16:32:20,351 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:20] "GET /teams HTTP/1.1" 200 -
+2024-12-26 16:32:20,371 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:20] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:21,310 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:21] "GET /teams/13 HTTP/1.1" 200 -
+2024-12-26 16:32:21,329 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:21] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:23,141 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:23] "GET /team/13/info HTTP/1.1" 200 -
+2024-12-26 16:32:23,157 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:23] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:27,606 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:27] "GET /teams/13/create_post HTTP/1.1" 200 -
+2024-12-26 16:32:27,619 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:27] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:35,094 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:35] "[32mPOST /teams/13/create_post HTTP/1.1[0m" 302 -
+2024-12-26 16:32:35,120 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:35] "GET /teams/13 HTTP/1.1" 200 -
+2024-12-26 16:32:35,139 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:35] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:32:48,078 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:48] "[32mPOST /post/rename/13 HTTP/1.1[0m" 302 -
+2024-12-26 16:32:48,099 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:48] "GET /teams/13 HTTP/1.1" 200 -
+2024-12-26 16:32:48,119 - INFO - 127.0.0.1 - - [26/Dec/2024 16:32:48] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:34:28,852 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\analyze_log.py', reloading
+2024-12-26 16:34:29,119 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:34:29,980 - WARNING -  * Debugger is active!
+2024-12-26 16:34:29,986 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:42:21,957 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:21] "[32mGET / HTTP/1.1[0m" 302 -
+2024-12-26 16:42:21,978 - INFO -  * Detected change in 'C:\\Users\\user\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\flask_sqlalchemy\\model.py', reloading
+2024-12-26 16:42:22,019 - INFO -  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.12_3.12.2288.0_x64__qbz5n2kfra8p0\\Lib\\encodings\\unicode_escape.py', reloading
+2024-12-26 16:42:22,024 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:22] "GET /home HTTP/1.1" 200 -
+2024-12-26 16:42:22,131 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:22] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:42:22,583 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:42:23,408 - WARNING -  * Debugger is active!
+2024-12-26 16:42:23,416 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:42:28,622 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:28] "GET /home HTTP/1.1" 200 -
+2024-12-26 16:42:28,827 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:28] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:42:30,721 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:30] "GET /notifications HTTP/1.1" 200 -
+2024-12-26 16:42:30,742 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:30] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:42:47,141 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:47] "GET /folders HTTP/1.1" 200 -
+2024-12-26 16:42:47,162 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:47] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:42:47,166 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:47] "[36mGET /static/img/klasör.jpg HTTP/1.1[0m" 304 -
+2024-12-26 16:42:48,863 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:48] "GET /folder/1 HTTP/1.1" 200 -
+2024-12-26 16:42:48,884 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:48] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:42:48,893 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:48] "[36mGET /static/img/klasör.jpg HTTP/1.1[0m" 304 -
+2024-12-26 16:42:51,916 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:51] "GET /teams HTTP/1.1" 200 -
+2024-12-26 16:42:51,938 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:51] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:42:53,679 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:53] "GET /profile HTTP/1.1" 200 -
+2024-12-26 16:42:53,701 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:53] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:42:55,131 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:55] "GET /profile HTTP/1.1" 200 -
+2024-12-26 16:42:55,159 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:55] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:42:56,439 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:56] "GET /backup HTTP/1.1" 200 -
+2024-12-26 16:42:56,477 - INFO - 127.0.0.1 - - [26/Dec/2024 16:42:56] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:15,437 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:15] "GET /notifications HTTP/1.1" 200 -
+2024-12-26 16:43:15,463 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:15] "[36mGET /static/home_base.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:19,823 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:19] "[32mGET /logout HTTP/1.1[0m" 302 -
+2024-12-26 16:43:19,839 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:19] "GET /login HTTP/1.1" 200 -
+2024-12-26 16:43:19,861 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:19] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:19,870 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:19] "[36mGET /static/img/logo.png HTTP/1.1[0m" 304 -
+2024-12-26 16:43:19,876 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:19] "[36mGET /static/img/bg.jpg HTTP/1.1[0m" 304 -
+2024-12-26 16:43:22,657 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:22] "GET /admin/login HTTP/1.1" 200 -
+2024-12-26 16:43:22,673 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:22] "[36mGET /static/img/logo.png HTTP/1.1[0m" 304 -
+2024-12-26 16:43:22,674 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:22] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:22,715 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:22] "[36mGET /static/img/bg.jpg HTTP/1.1[0m" 304 -
+2024-12-26 16:43:33,028 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:33] "[32mPOST /admin/login HTTP/1.1[0m" 302 -
+2024-12-26 16:43:33,058 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:33] "GET /admin/dashboard HTTP/1.1" 200 -
+2024-12-26 16:43:33,088 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:33] "[36mGET /static/admin.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:35,361 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:35] "[32mGET /admin/logout HTTP/1.1[0m" 302 -
+2024-12-26 16:43:35,372 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:35] "GET /admin/login HTTP/1.1" 200 -
+2024-12-26 16:43:35,397 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:35] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:35,406 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:35] "[36mGET /static/img/logo.png HTTP/1.1[0m" 304 -
+2024-12-26 16:43:37,633 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:37] "GET /admin/manage_users HTTP/1.1" 200 -
+2024-12-26 16:43:37,657 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:37] "[36mGET /static/admin.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:40,343 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:40] "GET /admin/user_info/11 HTTP/1.1" 200 -
+2024-12-26 16:43:40,364 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:40] "[36mGET /static/admin.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:40,411 - INFO -  * Detected change in 'C:\\Users\\user\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python312\\site-packages\\werkzeug\\serving.py', reloading
+2024-12-26 16:43:41,631 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:43:42,432 - WARNING -  * Debugger is active!
+2024-12-26 16:43:42,439 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:43:52,722 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:52] "GET /admin/dashboard HTTP/1.1" 200 -
+2024-12-26 16:43:52,933 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:52] "[36mGET /static/admin.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:54,638 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:54] "[32mGET /admin/logout HTTP/1.1[0m" 302 -
+2024-12-26 16:43:54,656 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:54] "GET /admin/login HTTP/1.1" 200 -
+2024-12-26 16:43:54,682 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:54] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2024-12-26 16:43:54,693 - INFO - 127.0.0.1 - - [26/Dec/2024 16:43:54] "[36mGET /static/img/logo.png HTTP/1.1[0m" 304 -
+2024-12-26 16:44:47,049 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\config.py', reloading
+2024-12-26 16:44:47,376 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:44:48,254 - WARNING -  * Debugger is active!
+2024-12-26 16:44:48,261 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:46:42,767 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\routes\\auth.py', reloading
+2024-12-26 16:46:43,130 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:46:43,962 - WARNING -  * Debugger is active!
+2024-12-26 16:46:43,970 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:49:00,117 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\utils.py', reloading
+2024-12-26 16:49:00,118 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\utils.py', reloading
+2024-12-26 16:49:01,100 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:49:02,049 - WARNING -  * Debugger is active!
+2024-12-26 16:49:02,057 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:49:20,343 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\utils.py', reloading
+2024-12-26 16:49:20,349 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\utils.py', reloading
+2024-12-26 16:49:20,351 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\utils.py', reloading
+2024-12-26 16:49:20,499 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:49:21,276 - WARNING -  * Debugger is active!
+2024-12-26 16:49:21,284 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:51:01,539 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-26 16:51:01,540 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-26 16:51:01,542 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:51:02,307 - WARNING -  * Debugger is active!
+2024-12-26 16:51:02,314 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:52:36,213 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\app.py', reloading
+2024-12-26 16:52:36,214 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\app.py', reloading
+2024-12-26 16:52:36,215 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\app.py', reloading
+2024-12-26 16:52:37,335 - INFO -  * Restarting with watchdog (windowsapi)
+2024-12-26 16:52:38,298 - WARNING -  * Debugger is active!
+2024-12-26 16:52:38,305 - INFO -  * Debugger PIN: 530-546-288
+2024-12-26 16:53:01,182 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\utils.py', reloading
+2024-12-26 16:53:01,183 - INFO -  * Detected change in 'C:\\Users\\user\\Desktop\\File_Storage_And_Backup_System\\utils\\utils.py', reloading
+2024-12-26 16:53:01,881 - INFO -  * Restarting with watchdog (windowsapi)

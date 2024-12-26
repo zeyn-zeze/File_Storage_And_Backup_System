@@ -4,7 +4,10 @@ class Config:
     # Veritabanı bağlantı dizesini güncelledim ve özel karakterler için URL encode kullandım.
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Zeynep5703?@localhost/flaskdb'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+    
+    source_directory = 'uploads'
+    backup_directory = 'backups'
+    
     # Dosya yükleme ayarları
     UPLOAD_FOLDER = 'uploads'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # Maksimum dosya boyutu 16MB

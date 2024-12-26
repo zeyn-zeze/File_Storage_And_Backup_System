@@ -3,29 +3,7 @@
 {% block content %}
 <div class="container mt-5">
     <h4>{{ folder.name }} Klasörü</h4>
-    <p><strong>Toplam Boyut:</strong> {{ (total_size / (1024 * 1024)) | round(2) }} MB</p> <!-- Klasörün toplam boyutu MB cinsinden -->
-
-    <!-- Kullanıcı alanının ilerleme çubuğu -->
-    <div class="mb-4">
-        <strong>Kullanılan Alan</strong>
-        <div class="progress" style="height: 25px;">
-            {% set total_space = 6144 %} <!-- 6144 MB toplam alan -->
-            {% set used_space = total_size / (1024 * 1024) %} <!-- MB cinsine çevir -->
-            {% set progress_percentage = (used_space / total_space) * 100 %}
-            <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%; background-color: green;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div class="d-flex justify-content-between">
-            <span>{{ used_space | round(2) }} MB</span> <!-- Kullanılan alan MB cinsinden -->
-            <span>{{ total_space }} MB</span> <!-- Toplam alan MB cinsinden -->
-        </div>
-    </div>
-
-    <!-- Storage Limit Warning -->
-    {% if total_size / (1024 * 1024) > storage_limit %}
-    <div class="alert alert-danger" role="alert">
-        Uyarı: Toplam depolama alanınız sınıra yaklaşmakta veya aşıyor. Dosya yüklemeniz engellenebilir.
-    </div>
-    {% endif %}
+    
 
     <!-- Dosyalar için Grid sistemi (3'e bölünmüş) -->
     <div class="row">
@@ -76,14 +54,14 @@
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameModal{{ file.id }}">Yeniden Adlandır</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('folder.delete_file', file_id=file.id) }}">Sil</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('folder.download_file', file_id=file.id) }}">İndir</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('folder.move_file', file_id=file.id) }}">Taşı</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#moveFileModal{{ file.id }}">Taşı</a></li> <!-- Added data-bs-toggle and data-bs-target -->
                     </ul>
                     
                 </div>
             </div>
         </div>
 
-
+<!-- Yeniden Adlandırma Modalı -->
         <div class="modal fade" id="renameModal{{ file.id }}" tabindex="-1" aria-labelledby="renameModalLabel{{ file.id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -103,6 +81,42 @@
                 </div>
             </div>
         </div>
+
+<!-- Taşıma Modalı -->
+<div class="modal fade" id="moveFileModal{{ file.id }}" tabindex="-1" aria-labelledby="moveFileModalLabel{{ file.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="moveFileModalLabel{{ file.id }}">Dosya Taşı</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('folder.move_file', file_id=file.id , folder_id = folder.id) }}" method="POST">
+                    {% if folders %}
+                    <div class="mb-3">
+                        <label class="form-label">Hedef Klasör</label>
+                        {% for folder in folders %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="folder" id="folder{{ folder.id }}" value="{{ folder.id }}" required>
+                            <label class="form-check-label" for="folder{{ folder.id }}">
+                                {{ folder.name }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Taşı</button>
+                    {% else %}
+                    <p>Taşınacak başka bir klasör bulunamadı.</p>
+                    {% endif %}
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+               
+                    
         {% endfor %}
     </div>
 </div>
@@ -116,6 +130,5 @@
         document.getElementById('uploadedFileName').textContent = fileName;
     });
 
-    
 </script>
 {% endblock %}

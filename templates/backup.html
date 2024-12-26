@@ -1,34 +1,62 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5" style="margin-left: -10%;"> <!-- Tabloyu sola kaydırmak için margin -->
+    <h3 class="text-center mb-4"style="margin-left: +10%;">Yedeklenmiş Dosyalar</h3>
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h4>Yedeklenen Dosyalar</h4>
+        <div class="col-md-10">
+            {% if files %}
+                <table class="table table-sm table-bordered table-hover text-center" style="font-size: 0.9rem;"> <!-- Daha küçük bir yazı tipi boyutu -->
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Dosya Adı</th>
+                            <th>Boyut (MB)</th>
+                            <th>Yüklenme Tarihi</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in files %}
+                        <tr>
+                            <td>{{ file.filename }}</td>
+                            <td>
+                                {% if file.size is not none %}
+                                    {{ (file.size / (1024 * 1024)) | round(2) }} MB
+                                {% else %}
+                                    Bilinmiyor
+                                {% endif %}
+                            </td>
+                            <td>{{ file.created_at.strftime('%d-%m-%Y %H:%M') }}</td>
+                            <td>
+                                <td>
+                                    {% if file.is_backup == 1 %}
+                                        <span class="badge bg-success">Yedeklenmiş</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Yedeklenmemiş</span>
+                                    {% endif %}
+                                    {% if file.is_sync == 1 %}
+                                        <span class="badge bg-primary">Senkronize</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Asenkron</span>
+                                    {% endif %}
+                                </td>
+                                
+                            </td>
+                            <td>
+                                <a href="{{ url_for('sync.open_file', file_id=file.id) }}" class="btn btn-sm btn-primary">Aç</a>
+                                <a href="{{ url_for('sync.download_file', file_id=file.id) }}" class="btn btn-sm btn-success">İndir</a>
+                                <a href="{{ url_for('sync.delete_file', file_id=file.id) }}" class="btn btn-sm btn-danger">Sil</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    Henüz yedeklenmiş dosya yok.
                 </div>
-                <div class="card-body">
-                    {% if files %}
-                        <ul class="list-group">
-                            {% for file in files %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center" style="color:black">
-                                    {{ file.filename}}  <!-- Dosya adını burada gösteriyoruz -->
-                                    <div>
-                                        <a href="{{ url_for('sync.open_file', file_id=file.id) }}" class="btn btn-success btn-sm ms-2">Aç</a>
-                                        <a href="{{ url_for('sync.delete_file', file_id=file.id) }}" class="btn btn-danger btn-sm ms-2">Sil</a>
-
-
-                                        
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>Henüz yedeklenmiş dosya yok.</p>
-                    {% endif %}
-                </div>
-            </div>
+            {% endif %}
         </div>
     </div>
 </div>

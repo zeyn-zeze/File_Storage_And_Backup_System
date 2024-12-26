@@ -10,20 +10,24 @@ from routes.main import main_bp
 from routes.sync import sync_bp
 from routes.team import team_bp
 from routes.dashboard import admin_bp
-from routes.folder_process import folder_bp 
-from threading import Thread
-from models.FileChangeHandler import start_watcher  # Import the file change handler
+from routes.folder_process import folder_bp
+from islemler.process_manager import start_processes
 
+# Flask Login Manager
 login_manager = LoginManager()
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 def create_app():
+    
     app = Flask(__name__)
+    
     app.config.from_object(Config)
-
+   
     # Initialize extensions
     db.init_app(app)
     bcrypt.init_app(app)
@@ -38,9 +42,23 @@ def create_app():
     app.register_blueprint(folder_bp)
     login_manager.login_view = 'auth.login'
 
-
     return app
+
+
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True)
+  
+    processes = start_processes()
+
+    # Flask uygulamasını başlat
+    try:
+        app.run(debug=True)
+    except KeyboardInterrupt:
+        print("Flask uygulaması durduruluyor...")
+    finally:
+        # Processleri durdur
+        for process in processes:
+            process.terminate()
+            process.join()
+        print("Tüm processler durduruldu.")
